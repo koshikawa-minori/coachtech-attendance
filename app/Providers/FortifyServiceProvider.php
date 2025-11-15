@@ -55,18 +55,32 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.register');
         });
 
-         // ログアウト後は /login へ
-        //$this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
-        //    public function toResponse($request)
-        //    {
-        //        return redirect()->route('login');
-        //    }
+        // ログイン時未認証ならメール認証へ
+        //$this->app->instance(LoginResponse::class, new class implements LoginResponse {
+            //public function toResponse($request)
+            //{
+            //    $user = $request->user();
+
+            //    if ($user && method_exists($user, 'hasVerifiedEmail') && ! $user->hasVerifiedEmail()) {
+            //        return redirect()->route('register.verify');
+            //    }
+
+            //    return redirect()->intended(config('fortify.home'));
+           // }
         //});
 
-        //$this->app->bind(
-        //    LoginRequest::class,
+        // ログアウト後は /login へ
+        $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
+            public function toResponse($request)
+            {
+                return redirect()->route('login');
+            }
+        });
+
+        $this->app->bind(
+            LoginRequest::class,
         //    FortifyLoginRequest::class
-        //);
+        );
 
         // ログイン認証
         Fortify::authenticateUsing(function ($request) {

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'ログイン')
+@section('title', '管理者ログイン')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/auth/login.css')}}">
@@ -8,9 +8,9 @@
 
 @section('content')
 <main class="login">
-    <h1 class="login__title">ログイン</h1>
+    <h1 class="login__title">管理者ログイン</h1>
 
-    <form class="login__form" method="POST" action="{{ route('login') }}" novalidate>
+    <form class="login__form" method="POST" action="{{ route('admin.login') }}" novalidate>
         @csrf
 
         <div class="login__group">
@@ -29,11 +29,7 @@
             @enderror
         </div>
 
-        <button class="login__button" type="submit">ログインする</button>
+        <button class="login__button" type="submit">管理者ログインする</button>
     </form>
-
-    <p class="login__link">
-    <a href="{{ route('register') }}">会員登録はこちら</a>
-    </p>
 </main>
 @endsection

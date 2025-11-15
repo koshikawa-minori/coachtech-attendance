@@ -1,0 +1,223 @@
+/* 1 基本初期化 */
+:root {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+html {
+    line-height: 1.5;
+    /* スクロールバー幅差異でのレイアウト揺れを抑える */
+    scrollbar-gutter: stable both-edges;
+}
+
+body {
+    margin: 0;
+    /* システムフォント優先 + 日本語環境想定 */
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP",
+        "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", "Meiryo",
+        sans-serif;
+    font-size: 16px;
+    color: #222;
+    background: #fff;
+}
+
+/* 2 画像・メディア */
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+    display: block;
+    max-width: 100%;
+}
+
+img,
+video,
+canvas {
+    height: auto;
+}
+
+picture {
+    display: block;
+}
+
+/* 3 タイポグラフィ共通 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
+    margin: 0;
+}
+
+ul[role="list"],
+ol[role="list"] {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+b,
+strong {
+    font-weight: 700;
+}
+
+small {
+    font-size: 80%;
+}
+
+/* 4 テーブル（初期化＋崩れ防止） */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+th,
+td {
+    padding: 0;
+    vertical-align: top;
+    text-align: left;
+}
+
+/* 5 フォーム（見た目差異の最小化) */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    color: inherit;
+}
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input[type="search"] {
+    -webkit-appearance: none;
+    appearance: none;
+    outline-offset: 0;
+}
+
+::-webkit-search-decoration {
+    display: none;
+}
+
+/* Safari余計なアイコン抑制 */
+
+/* 6 フォーカス（アクセシビリティ重視のベース） */
+:focus-visible {
+    outline: 2px solid #2563eb;
+    /* 目立つ青 */
+    outline-offset: 2px;
+}
+
+/* 7 リスト・引用の余白最小化 */
+ul,
+ol {
+    margin: 0;
+    padding-left: 1.2em;
+}
+
+blockquote {
+    margin: 0;
+    padding-left: 1em;
+    border-left: 4px solid #eee;
+}
+
+/* 8 ユーティリティ（後方互換＆安定化用の少数精鋭） */
+.hidden {
+    display: none !important;
+}
+
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* 9 レイアウトの基礎（Flex/Grid の安定キー） */
+.row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.col {
+    min-width: 0;
+}
+
+/* Firefoxのテキストはみ出し対策 */
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.container {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 24px;
+}
+
+/* 10 画像比率の安定 */
+.ratio-16x9 {
+    aspect-ratio: 16 / 9;
+}
+
+.ratio-1x1 {
+    aspect-ratio: 1 / 1;
+}
+
+/* 11 モーション控えめ環境への配慮 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

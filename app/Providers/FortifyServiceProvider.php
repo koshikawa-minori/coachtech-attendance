@@ -79,7 +79,7 @@ class FortifyServiceProvider extends ServiceProvider
 
         $this->app->bind(
             LoginRequest::class,
-        //    FortifyLoginRequest::class
+            FortifyLoginRequest::class
         );
 
         // ログイン認証

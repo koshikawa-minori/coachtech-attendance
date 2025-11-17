@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-// use Laravel\Fortify\Http\Requests\LoginRequest as Base;
+use Laravel\Fortify\Http\Requests\LoginRequest as Base;
 
-class FortifyLoginRequest extends FormRequest
+class FortifyLoginRequest extends Base
 {
     /**
      * Determine if the user is authorized to make this request.

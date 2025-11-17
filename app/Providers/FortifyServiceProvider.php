@@ -10,7 +10,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\RegisterResponse;
 use Laravel\Fortify\Http\Requests\LoginRequest;
+use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Contracts\LogoutResponse;
 use App\Models\User;
 use App\Actions\Fortify\CreateNewUser;
@@ -18,6 +20,7 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Requests\FortifyLoginRequest;
+
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -55,19 +58,27 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.register');
         });
 
+        // 会員登録後メール認証へ
+        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+            public function toResponse($request)
+            {
+                return redirect()->route('register.verify');
+            }
+        });
+
         // ログイン時未認証ならメール認証へ
-        //$this->app->instance(LoginResponse::class, new class implements LoginResponse {
-            //public function toResponse($request)
-            //{
-            //    $user = $request->user();
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+            public function toResponse($request)
+            {
+                $user = $request->user();
 
-            //    if ($user && method_exists($user, 'hasVerifiedEmail') && ! $user->hasVerifiedEmail()) {
-            //        return redirect()->route('register.verify');
-            //    }
+                if ($user && method_exists($user, 'hasVerifiedEmail') && ! $user->hasVerifiedEmail()) {
+                    return redirect()->route('register.verify');
+                }
 
-            //    return redirect()->intended(config('fortify.home'));
-           // }
-        //});
+                return redirect()->intended(config('fortify.home'));
+            }
+        });
 
         // ログアウト後は /login へ
         $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {

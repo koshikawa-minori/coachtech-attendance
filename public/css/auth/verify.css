@@ -1,0 +1,46 @@
+.header__center,
+.header__right {
+    display: none;
+}
+
+.verify {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.verify__group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+}
+
+.verify__title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 37px;
+}
+
+.verify__text {
+    text-align: center;
+    font-size: 22px;
+    line-height: 2;
+}
+
+.verify__button {
+    font-size: 20px;
+    color: #0d99ff;
+    text-align: center;
+}
+
+@media (min-width: 1400px) {
+    .verify__group {
+        width: 540px;
+    }
+
+    .verify__button {
+        height: 48px;
+    }
+}

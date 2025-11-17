@@ -40,6 +40,10 @@
             @endunless
             --}}
         </div>
+        <form class="header__logout" method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="header__button">ログアウト</button>
+                    </form>
     </header>
 
     <main class="main">

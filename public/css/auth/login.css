@@ -22,12 +22,11 @@
 .login__group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
     width: 100%;
 }
 
 .login__label {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -36,15 +35,11 @@
     color: #ff5555;
 }
 
-.login__input,
-.login__button {
-    width: 100%;
-}
-
 .login__input {
     display: block;
-    height: 44px;
     box-sizing: border-box;
+    height: 44px;
+    width: 100%;
     border: 1px solid #000;
     border-radius: 2px;
     background-clip: padding-box;
@@ -53,21 +48,21 @@
 }
 
 .login__button {
-    margin-top: 16px;
-    height: 44px;
+    cursor: pointer;
+    margin-top: 50px;
+    width: 100%;
     padding: 10px;
+    background-color: #000;
+    border: none;
+    border-radius: 6px;
     font-size: 20px;
     font-weight: 700;
     color: #fff;
-    border: none;
-    border-radius: 6px;
-    background-color: #000;
-    cursor: pointer;
 }
 
 .login__link {
-    color: #0d99ff;
     text-align: center;
+    color: #0d99ff;
 }
 
 @media (min-width: 1400px) {

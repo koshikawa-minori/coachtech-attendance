@@ -11,39 +11,51 @@
 </head>
 
 <body>
+    @php
+        $headerType = $headerType ?? 'user';
+    @endphp
+
     <header class="header">
         <div class="header__inner">
             <div class="header__left">
-                <img src="{{ asset('images/logo.svg')}}" alt="COACHTECHロゴ">
+                    <img src="{{ asset('images/logo.svg')}}" alt="COACHTECHロゴ">
             </div>
-
-            {{-- このファイルの全てのルートも直すし、以下のボタンたちもheaderType 方針に沿って作り直しする
-
-            @unless (request()->routeIs('login', 'register', 'register.verify', 'verification.*'))
+            @if ($headerType === 'auth')
+                {{-- 右側は何も出さない --}}
+            @elseif ($headerType === 'user')
                 <div class="header__right">
-
-
-                    <a class="header__button" href="{{ route('mypage', [], false) }}">勤怠</a>
-                    <a class="header__button header__button--primary" href="{{ route('sell.create') }}">勤怠一覧</a>
-                    <a class="header__button header__button--primary" href="{{ route('sell.create') }}">申請</a>
-
-
-                    <a class="header__button" href="{{ route('mypage', [], false) }}">今月の出勤一覧</a>
-                    <a class="header__button header__button--primary" href="{{ route('sell.create') }}">申請一覧</a>
-
+                    <a class="header__button header__button--primary" href="{{ route('attendance.create') }}">勤怠</a>
+                    <a class="header__button header__button--primary" href="{{ route('attendance.index') }}">勤怠一覧</a>
+                    <a class="header__button header__button--primary" href="{{ route('requests.index') }}">申請</a>
 
                     <form class="header__logout" method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="header__button">ログアウト</button>
                     </form>
                 </div>
-            @endunless
-            --}}
-        </div>
-        <form class="header__logout" method="POST" action="{{ route('logout') }}">
+            @elseif ($headerType === 'user_clock_out')
+                <div class="header__right">
+                    <a class="header__button header__button--primary" href="{{ route('attendance.index') }}">今月の出勤一覧</a>
+                    <a class="header__button header__button--primary" href="{{ route('requests.index') }}">申請一覧</a>
+
+                    <form class="header__logout" method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="header__button">ログアウト</button>
                     </form>
+                </div>
+            @elseif ($headerType === 'admin')
+                <div class="header__right">
+                    <a class="header__button header__button--primary" href="{{ route('admin.attendance.index') }}">勤怠一覧</a>
+                    <a class="header__button header__button--primary" href="{{ route('admin.staff.index') }}">スタッフ一覧</a>
+                    <a class="header__button header__button--primary" href="{{ route('admin.requests.index') }}">申請一覧</a>
+
+                    <form class="header__logout" method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="header__button">ログアウト</button>
+                    </form>
+                </div>
+            @endif
+        </div>
     </header>
 
     <main class="main">

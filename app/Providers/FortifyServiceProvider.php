@@ -50,12 +50,12 @@ class FortifyServiceProvider extends ServiceProvider
 
          // ログイン画面
         Fortify::loginView(function () {
-            return view('auth.login');
+            return view('auth.login', ['headerType' => 'auth']);
         });
 
         // 会員登録画面
         Fortify::registerView(function () {
-            return view('auth.register');
+            return view('auth.register', ['headerType' => 'auth']);
         });
 
         // 会員登録後メール認証へ
@@ -94,7 +94,7 @@ class FortifyServiceProvider extends ServiceProvider
         );
 
         // ログイン認証
-        Fortify::authenticateUsing(function ($request) {
+        Fortify::authenticateUsing(function (Request $request) {
             $user = User::where('email', $request->email)->first();
 
             if ($user && Hash::check($request->password, $user->password)) {

@@ -22,7 +22,6 @@
 .register__group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
     width: 100%;
 
 }
@@ -37,15 +36,11 @@
     color: #ff5555;
 }
 
-.register__input,
-.register__button {
-    width: 100%;
-}
-
 .register__input {
     display: block;
-    height: 44px;
     box-sizing: border-box;
+    height: 44px;
+    width: 100%;
     border: 1px solid #000;
     border-radius: 2px;
     background-clip: padding-box;
@@ -56,6 +51,7 @@
 .register__button {
     margin-top: 50px;
     padding: 10px;
+    width: 100%;
     font-size: 20px;
     font-weight: 700;
     color: #fff;

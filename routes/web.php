@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\UserRequestController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\AdminRequestController;
 
 // メール認証誘導画面
 Route::view('/register/verify', 'auth.register_verify', ['headerType' => 'auth'])
@@ -18,7 +23,7 @@ Route::get('/email/verify', function ()
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request)
 {
     $request->fulfill();
-    return redirect()->route('attendance.create');
+    return redirect()->route('attendance.show');
 
 })->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
 
@@ -36,13 +41,12 @@ Route::post('/email/verification-notification', function (Request $request)
 // 認証必須ページ
 Route::middleware(['auth'])->group(function()
 {
-    //出勤登録画面（一般ユーザー）
-    Route::get('/attendance', function ()
-    {
-        return view('attendance.attendance');
-    })->name('attendance.create');
+    //勤怠登録画面（一般ユーザー）
+    Route::get('/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
 
-    // 出勤登録処理（一般ユーザー）
+    // 出勤・休憩・退勤処理（一般ユーザー）
+    Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+
     // 休憩入処理（一般ユーザー）
     // 休憩戻処理（一般ユーザー）
     // 退勤処理（一般ユーザー）

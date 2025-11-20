@@ -24,7 +24,7 @@
                 {{-- 右側は何も出さない --}}
             @elseif ($headerType === 'user')
                 <div class="header__right">
-                    <a class="header__button header__button--primary" href="{{ route('attendance.create') }}">勤怠</a>
+                    <a class="header__button header__button--primary" href="{{ route('attendance.show') }}">勤怠</a>
                     <a class="header__button header__button--primary" href="{{ route('attendance.index') }}">勤怠一覧</a>
                     <a class="header__button header__button--primary" href="{{ route('requests.index') }}">申請</a>
 

@@ -2,7 +2,7 @@
 @section('title', '勤務登録')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/attendance/attendance.css') }}">
 @endpush
 
 @section('content')

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-use App\Models\User;
 use App\Models\Attendance;
 
 class AttendanceController extends Controller
@@ -18,14 +16,14 @@ class AttendanceController extends Controller
         $weekday = now()->isoFormat('ddd');
 
         $userId = Auth::id();
-        $isExists = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
+        $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
 
-        if($isExists) {
-                $status = 'working';
-        } elseif {
-                $status = 'after_work';
-        } else {
-                $status = 'before_work';
+        if (is_null($todayAttendance)) {
+            $status = 'before_work';
+        }elseif (is_null($todayAttendance->clock_out_at)) {
+            $status = 'working';
+        }else{
+            $status = 'after_work';
         }
 
         return view('attendance.attendance', compact('today', 'currentTime', 'status', 'weekday'));
@@ -41,13 +39,13 @@ class AttendanceController extends Controller
 
         switch ($actionType) {
             case 'clock_in':
-                $isExists = Attendance::where('user_id', $userId)->whereDate('work_date', today())->exists();
+                $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->exists();
 
-                if($isExists) {
+                if($todayAttendance) {
                         // 新規作成はせず、そのままリダイレクト
                 } else {
                         // ログインユーザーID＋今日の日付＋現在時刻で勤怠レコードを作成してからリダイレクト
-                        $attendance = Attendance::create([
+                        $todayAttendance = Attendance::create([
                             'user_id' => $userId,
                             'work_date' => $today,
                             'clock_in_at' => $currentTime,

@@ -1,8 +1,9 @@
 .attendance {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     min-height: 100vh;
+    background-color: #f0eff2;
 }
 
 .attendance__container {
@@ -32,6 +33,11 @@
     font-weight: 700;
 }
 
+.attendance__button {
+    display: flex;
+    gap: 40px;
+}
+
 .attendance__button--inOut,
 .attendance__button--break {
     margin-top: 50px;
@@ -49,4 +55,11 @@
 .attendance__button--break {
     background-color: #fff;
     color: #000;
+}
+
+@media (min-width: 1400px) {
+
+    .attendance__button{
+        gap: 80px;
+    }
 }

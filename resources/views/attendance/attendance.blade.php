@@ -37,17 +37,19 @@
                     {{ $currentTime }}
                 </div>
 
-                <form method="POST" action="{{ route('attendance.store')}}">
-                    @csrf
-                    <input type="hidden" name="action_type" value="clock_out">
-                    <button class="attendance__button--inOut" type="submit">退勤</button>
-                </form>
+                <div class="attendance__button">
+                    <form method="POST" action="{{ route('attendance.store')}}">
+                        @csrf
+                        <input type="hidden" name="action_type" value="clock_out">
+                        <button class="attendance__button--inOut" type="submit">退勤</button>
+                    </form>
 
-                <form method="POST" action="{{ route('attendance.store')}}">
-                    @csrf
-                    <input type="hidden" name="action_type" value="break_start">
-                    <button class="attendance__button--break" type="submit">休憩入</button>
-                </form>
+                    <form method="POST" action="{{ route('attendance.store')}}">
+                        @csrf
+                        <input type="hidden" name="action_type" value="break_start">
+                        <button class="attendance__button--break" type="submit">休憩入</button>
+                    </form>
+                </div>
 
             @elseif ($status === 'on_break')
                 <h1 class="attendance__title">休憩中</h1>

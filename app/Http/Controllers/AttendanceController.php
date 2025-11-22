@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
+use App\Models\BreakTime;
 
 class AttendanceController extends Controller
 {
@@ -44,7 +45,7 @@ class AttendanceController extends Controller
                 if($todayAttendance) {
                         // 新規作成はせず、そのままリダイレクト
                 } else {
-                        // ログインユーザーID＋今日の日付＋現在時刻で勤怠レコードを作成してからリダイレクト
+                        // ログインユーザーID＋今日の日付＋現在時刻で勤怠レコードを作成しリダイレクト
                         $todayAttendance = Attendance::create([
                             'user_id' => $userId,
                             'work_date' => $today,

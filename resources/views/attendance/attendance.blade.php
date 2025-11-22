@@ -79,7 +79,7 @@
                     {{ $currentTime }}
                 </div>
 
-                <p>お疲れ様でした。</p>
+                <p class="attendance__text">お疲れ様でした。</p>
             @endif
         </div>
     </div>

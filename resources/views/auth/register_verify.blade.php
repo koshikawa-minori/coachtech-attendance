@@ -2,7 +2,7 @@
 @section('title', '登録完了のご案内')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/auth/register-verify.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/auth/register_verify.css')}}">
 @endpush
 
 @section('content')

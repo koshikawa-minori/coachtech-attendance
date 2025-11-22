@@ -57,9 +57,18 @@
     color: #000;
 }
 
+.attendance__text {
+    font-size: 20px;
+    font-weight: 700;
+}
+
 @media (min-width: 1400px) {
 
     .attendance__button{
         gap: 80px;
+    }
+
+    .attendance__text {
+        font-size: 26px;
     }
 }

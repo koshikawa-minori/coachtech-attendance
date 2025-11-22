@@ -25,7 +25,7 @@ class Attendance extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function break_times()
+    public function breakTimes()
     {
         return $this->hasMany(BreakTime::class);
     }

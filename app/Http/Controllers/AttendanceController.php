@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use App\Models\BreakTime;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
@@ -14,20 +15,32 @@ class AttendanceController extends Controller
         // 現在日時の取得
         $today = today()->format('Y年n月j日');
         $currentTime = now()->format('H:i');
-        $weekday = now()->isoFormat('ddd');
+        $weekday = Carbon::now()->isoFormat('ddd');
 
         $userId = Auth::id();
         $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
 
+        $headerType = 'user';
+
         if (is_null($todayAttendance)) {
             $status = 'before_work';
-        }elseif (is_null($todayAttendance->clock_out_at)) {
-            $status = 'working';
-        }else{
+
+        } elseif (is_null($todayAttendance->clock_out_at)) {
+            $todayBreak = $todayAttendance->breakTimes();
+            $breakTime = $todayBreak->whereNull('break_end_at')->orderByDesc('break_start_at')->first();
+
+            if ($breakTime) {
+                $status = 'on_break';
+            } else {
+                $status = 'working';
+            }
+
+        } else {
             $status = 'after_work';
+            $headerType = 'user_clock_out';
         }
 
-        return view('attendance.attendance', compact('today', 'currentTime', 'status', 'weekday'));
+        return view('attendance.attendance', compact('today', 'currentTime', 'status', 'weekday', 'headerType'));
 
     }
 
@@ -42,30 +55,60 @@ class AttendanceController extends Controller
             case 'clock_in':
                 $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->exists();
 
-                if($todayAttendance) {
-                        // 新規作成はせず、そのままリダイレクト
-                } else {
-                        // ログインユーザーID＋今日の日付＋現在時刻で勤怠レコードを作成しリダイレクト
-                        $todayAttendance = Attendance::create([
-                            'user_id' => $userId,
-                            'work_date' => $today,
-                            'clock_in_at' => $currentTime,
-                            ]);
+                if(!$todayAttendance) {
+                    $todayAttendance = Attendance::create([
+                        'user_id' => $userId,
+                        'work_date' => $today,
+                        'clock_in_at' => $currentTime,
+                    ]);
                 }
                 return redirect()->route('attendance.show');
-
                 break;
 
             case 'break_start':
-                // 休憩開始
+                $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
+
+                $todayBreak = $todayAttendance->breakTimes();
+                $breakTime = $todayBreak->whereNull('break_end_at')->orderByDesc('break_start_at')->first();
+
+                $attendanceId = $todayAttendance->id;
+                $breakStart = now();
+
+                if(!$breakTime) {
+                    BreakTime::create([
+                        'attendance_id' => $attendanceId,
+                        'break_start_at' => $breakStart,
+                    ]);
+                }
+
+                return redirect()->route('attendance.show');
                 break;
 
             case 'break_end':
-                // 休憩戻り
+                $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
+
+                $todayBreak = $todayAttendance->breakTimes();
+                $breakTime = $todayBreak->whereNull('break_end_at')->orderByDesc('break_start_at')->first();
+
+                if($breakTime) {
+                    $breakTime->update([
+                        'break_end_at' => now(),
+                    ]);
+                }
+
+                return redirect()->route('attendance.show');
                 break;
 
             case 'clock_out':
-                // 退勤
+                $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
+
+                if($todayAttendance) {
+                    $todayAttendance->update([
+                        'clock_out_at' => now(),
+                    ]);
+                }
+
+                return redirect()->route('attendance.show');
                 break;
         }
 

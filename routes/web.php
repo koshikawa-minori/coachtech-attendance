@@ -47,14 +47,8 @@ Route::middleware(['auth'])->group(function()
     // 出勤・休憩・退勤処理（一般ユーザー）
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
 
-    // 休憩入処理（一般ユーザー）
-    // 休憩戻処理（一般ユーザー）
-    // 退勤処理（一般ユーザー）
     // 勤怠一覧画面（一般ユーザー）
-    Route::get('/attendance/list', function ()
-    {
-        return view('attendance.attendance_list');
-    })->name('attendance.index');
+    Route::get('/attendance/list', [AttendanceController::class, 'index'])->name('attendance.index');
 
     // 勤怠詳細画面（一般ユーザー）
     // 勤怠詳細画面＿修正申請（一般ユーザー）

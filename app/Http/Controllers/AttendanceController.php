@@ -115,4 +115,27 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.show');
 
     }
+
+    public function index(Request $request){
+        $userId = Auth::id();
+        $requestedMonth = $request->query('month');
+        $headerType = 'user';
+
+        if ($requestedMonth) {
+            $targetMonth  = Carbon::parse($requestedMonth);
+        } else {
+            $targetMonth  = Carbon::now();
+        }
+
+        $startOfMonth = $targetMonth ->copy()->startOfMonth();
+
+        $endOfMonth = $targetMonth ->copy()->endOfMonth();
+
+        $attendances = Attendance::where('user_id', $userId)->whereBetween('work_date', [$startOfMonth, $endOfMonth])->get();
+
+        return view('attendance.attendance_list', [
+            'attendances' => $attendances,
+            'headerType' => $headerType,
+        ]);
+    }
 }

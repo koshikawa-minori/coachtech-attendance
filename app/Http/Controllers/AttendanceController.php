@@ -128,13 +128,29 @@ class AttendanceController extends Controller
         }
 
         $startOfMonth = $targetMonth ->copy()->startOfMonth();
-
         $endOfMonth = $targetMonth ->copy()->endOfMonth();
 
         $attendances = Attendance::where('user_id', $userId)->whereBetween('work_date', [$startOfMonth, $endOfMonth])->get();
 
+        $previousMonth = $targetMonth->copy()->subMonth()->format('Y-m');
+        $nextMonth = $targetMonth->copy()->addMonth()->format('Y-m');
+
+        $startDateTime = $startOfMonth->copy();
+        $endDateTime = $endOfMonth->copy();
+
+        $dates = [];
+        $diffDays = $startDateTime->diffInDays($endDateTime);
+        for ($dayIndex = 0; $dayIndex <= $diffDays; $dayIndex++) {
+            $dates[] = $startDateTime->format('Y-m-d');
+            $startDateTime->addDays();
+        }
+
         return view('attendance.attendance_list', [
             'attendances' => $attendances,
+            'startOfMonth' => $startOfMonth,
+            'previousMonth' => $previousMonth,
+            'nextMonth' => $nextMonth,
+            'dates' => $dates,
             'headerType' => $headerType,
         ]);
     }

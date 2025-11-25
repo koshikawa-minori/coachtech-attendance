@@ -1,0 +1,31 @@
+.attendance {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0eff2;
+}
+
+.attendance-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding: 50px 16px;
+}
+
+.attendance-detail__title {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+@media (min-width: 1400px) {
+
+    .attendance__button{
+        gap: 80px;
+    }
+
+    .attendance__text {
+        font-size: 26px;
+    }
+}

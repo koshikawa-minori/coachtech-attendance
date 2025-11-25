@@ -12,15 +12,16 @@ class AttendanceController extends Controller
 {
     public function show(Request $request)
     {
+        $headerType = 'user';
+
         // 現在日時の取得
         $today = today()->format('Y年n月j日');
         $currentTime = now()->format('H:i');
         $weekday = Carbon::now()->isoFormat('ddd');
 
+        // ログインユーザーの今日の勤怠取得
         $userId = Auth::id();
         $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
-
-        $headerType = 'user';
 
         if (is_null($todayAttendance)) {
             $status = 'before_work';
@@ -46,10 +47,12 @@ class AttendanceController extends Controller
 
     public function store(Request $request)
     {
-        $actionType = $request->input('action_type');
         $userId = Auth::id();
         $today = today();
         $currentTime = now();
+
+        // どのボタンが押されたか取得
+        $actionType = $request->input('action_type');
 
         switch ($actionType) {
             case 'clock_in':
@@ -118,8 +121,10 @@ class AttendanceController extends Controller
 
     public function index(Request $request){
         $userId = Auth::id();
-        $requestedMonth = $request->query('month');
         $headerType = 'user';
+
+        // 表示したい月判定
+        $requestedMonth = $request->query('month');
 
         if ($requestedMonth) {
             $targetMonth  = Carbon::parse($requestedMonth);
@@ -127,20 +132,25 @@ class AttendanceController extends Controller
             $targetMonth  = Carbon::now();
         }
 
+        // 月初と月末をCarbonで作る
         $startOfMonth = $targetMonth ->copy()->startOfMonth();
         $endOfMonth = $targetMonth ->copy()->endOfMonth();
 
+        // 今月の勤怠取得
         $attendances = Attendance::where('user_id', $userId)->whereBetween('work_date', [$startOfMonth, $endOfMonth])->get();
 
+        // 前月と翌月リンクの処理
         $previousMonth = $targetMonth->copy()->subMonth()->format('Y-m');
         $nextMonth = $targetMonth->copy()->addMonth()->format('Y-m');
 
+        // その月の月初から月末までのリスト作り
         $startDateTime = $startOfMonth->copy();
         $endDateTime = $endOfMonth->copy();
 
         $dates = [];
         $diffDays = $startDateTime->diffInDays($endDateTime);
-        for ($dayIndex = 0; $dayIndex <= $diffDays; $dayIndex++) {
+        for ($dayIndex = 0; $dayIndex <= $diffDays; $dayIndex++)
+        {
             $dates[] = $startDateTime->format('Y-m-d');
             $startDateTime->addDays();
         }
@@ -151,6 +161,17 @@ class AttendanceController extends Controller
             'previousMonth' => $previousMonth,
             'nextMonth' => $nextMonth,
             'dates' => $dates,
+            'headerType' => $headerType,
+        ]);
+    }
+
+    public function detail(Attendance $attendance)
+    {
+        $attendance->load('breakTimes');
+        $headerType = 'user';
+
+        return view('attendance.attendance_detail', [
+            'attendances' => $attendance,
             'headerType' => $headerType,
         ]);
     }

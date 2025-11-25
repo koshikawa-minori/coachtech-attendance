@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function()
     Route::get('/attendance/list', [AttendanceController::class, 'index'])->name('attendance.index');
 
     // 勤怠詳細画面（一般ユーザー）
+    Route::get('/attendance/detail/{attendance}', [AttendanceController::class, 'detail'])->name('attendance.detail');
     // 勤怠詳細画面＿修正申請（一般ユーザー）
     // 申請一覧画面（一般ユーザー）
     Route::get('/requests', function ()

@@ -1,5 +1,5 @@
 .header {
-    background-color: #333;
+    background-color: #000;
 }
 
 .header__inner {
@@ -24,8 +24,8 @@
 
 .header__left img {
     display: block;
-    height: 28px;
-    width: auto;
+    height: auto;
+    width: 300px;
 }
 
 .header__right {

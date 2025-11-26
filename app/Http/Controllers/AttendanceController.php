@@ -167,7 +167,33 @@ class AttendanceController extends Controller
 
     public function detail(Attendance $attendance)
     {
+        // ・ログインユーザー本人の選択した勤怠詳細を表示する。
+        // ・表示項目：氏名、日付、出勤・退勤、休憩（複数行）、備考。
+        // ・表示内容は打刻内容と一致していること。
+        // ・休憩はレコードの数に応じて行を表示し、さらに新規入力フィールドを 1 行表示する。
+        // ・承認待ちの場合は修正不可とし、「承認待ちのため修正はできません。」を表示する。
+        // ・承認待ち以外の場合は「出勤・退勤」「休憩」「備考」を編集できる。
         $attendance->load('breakTimes');
+        $headerType = 'user';
+
+        return view('attendance.attendance_detail', [
+            'attendances' => $attendance,
+            'headerType' => $headerType,
+        ]);
+    }
+
+    public function detailRequest(Attendance $attendance)
+    {
+        // ・ユーザーが入力した「出勤・退勤」「休憩」「備考」の修正内容を受け付ける。
+        // ・AttendanceTimeRequest（FormRequest）にてバリデーションを実施する。
+        // ・バリデーション NG の場合は、元の画面にリダイレクトしエラーメッセージを表示する。
+        // ・バリデーション OK の場合は修正申請テーブルに申請内容を登録し、
+        //   ステータスを「承認待ち」として保存する。
+        // ・申請後は、一般ユーザー側の申請一覧「承認待ち」に表示され、
+        //   管理者の修正申請承認画面にも表示される。
+        // ・すでに承認待ち状態の勤怠に対しては追加の修正は行えず、
+        //   「承認待ちのため修正はできません。」を表示する。
+
         $headerType = 'user';
 
         return view('attendance.attendance_detail', [

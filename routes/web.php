@@ -53,6 +53,7 @@ Route::middleware(['auth'])->group(function()
     // 勤怠詳細画面（一般ユーザー）
     Route::get('/attendance/detail/{attendance}', [AttendanceController::class, 'detail'])->name('attendance.detail');
     // 勤怠詳細画面＿修正申請（一般ユーザー）
+    Route::post('/attendance/detail/{attendance}', [AttendanceController::class, 'detailRequest'])->name('attendance.detail.request');
     // 申請一覧画面（一般ユーザー）
     Route::get('/requests', function ()
     {

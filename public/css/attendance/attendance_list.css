@@ -1,7 +1,6 @@
 .attendance {
     display: flex;
     justify-content: center;
-
     background-color: #f0eff2;
 }
 
@@ -25,6 +24,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+    padding: 10px 0;
     border-radius: 6px;
     background-color: #fff;
     font-weight: 700;
@@ -49,11 +49,12 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
-    font-weight: 700;
 }
 
 .this-month__icon {
-    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    display: block;
 }
 
 .attendance-list table {
@@ -62,40 +63,36 @@
 
 .attendance-list th,
 .attendance-list td {
-    padding: 4px 30px;
+    padding: 8px 30px;
     font-size: 12px;
 }
 
-.attendance-list__thead th:first-child {
+.attendance-list__header-row th:first-child {
     border-top-left-radius: 6px;
 }
 
-.attendance-list__thead th:last-child {
+.attendance-list__header-row th:last-child {
     border-top-right-radius: 6px;
 }
 
-.attendance-list__tbody tr:last-child  td:first-child {
+.attendance-list__body-row tr:last-child  td:first-child {
     border-bottom-left-radius: 6px;
 }
 
-.attendance-list__tbody tr:last-child  td:last-child {
+.attendance-list__body-row tr:last-child  td:last-child {
     border-bottom-right-radius: 6px;
 }
 
-.attendance-list__thead tr,
-.attendance-list__tbody tr {
+.attendance-list__header-row tr,
+.attendance-list__body-row tr {
     border-bottom: 3px solid #f0eff2;
 }
 
-.attendance-list__thead,
-.attendance-list__tbody {
+.attendance-list__header-row,
+.attendance-list__body-row {
     font-weight: 700;
     background-color: #fff;
     color: #737373;
-}
-
-.attendance-list__thead {
-    border-radius: 6px;
 }
 
 .button-detail {
@@ -107,4 +104,6 @@
 .attendance-list {
     width: 900px;
 }
+
+
 }

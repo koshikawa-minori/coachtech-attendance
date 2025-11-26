@@ -16,7 +16,7 @@
                     <a href="{{ route('attendance.index', ['month'=> $previousMonth]) }}">前月</a>
                 </div>
                 <div class="this-month">
-                    <span class="this-month__icon">📅</span>
+                    <img src="{{ asset('images/calendar.svg') }}" class="this-month__icon" alt="カレンダーアイコン">
                     <span class="this-month__text">{{ $startOfMonth->format('Y/m') }}</span>
                 </div>
                 <div class="next-month">
@@ -26,18 +26,18 @@
             </div>
 
             <table>
-                <thead class="attendance-list__thead">
+                <thead class="attendance-list__header-row">
                     <tr>
                         <th class="table-days">日付</th>
-                        <th class="table-clock_in">出勤</th>
-                        <th class="table-clock_out">退勤</th>
+                        <th class="table-clock-in">出勤</th>
+                        <th class="table-clock-out">退勤</th>
                         <th class="table-break">休憩</th>
                         <th class="table-total">合計</th>
                         <th class="table-detail">詳細</th>
                     </tr>
                 </thead>
 
-                <tbody class="attendance-list__tbody">
+                <tbody class="attendance-list__body-row">
                     @foreach ($dates as $date)
                         @php
                             $dateCarbon = \Carbon\Carbon::parse($date);

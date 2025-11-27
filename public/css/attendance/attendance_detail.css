@@ -29,3 +29,16 @@
         font-size: 26px;
     }
 }
+
+/*時計アイコン非表示*/
+.detail__input::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: none;
+}
+
+.detail__input {
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+

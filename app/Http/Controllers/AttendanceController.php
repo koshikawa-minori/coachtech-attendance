@@ -167,7 +167,6 @@ class AttendanceController extends Controller
 
     public function detail(Attendance $attendance)
     {
-        // ・ログインユーザー本人の選択した勤怠詳細を表示する。
         // ・表示項目：氏名、日付、出勤・退勤、休憩（複数行）、備考。
         // ・表示内容は打刻内容と一致していること。
         // ・休憩はレコードの数に応じて行を表示し、さらに新規入力フィールドを 1 行表示する。
@@ -177,7 +176,7 @@ class AttendanceController extends Controller
         $headerType = 'user';
 
         return view('attendance.attendance_detail', [
-            'attendances' => $attendance,
+            'attendance' => $attendance,
             'headerType' => $headerType,
         ]);
     }

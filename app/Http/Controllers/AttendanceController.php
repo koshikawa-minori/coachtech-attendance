@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
+use App\Models\AttendanceCorrection;
 use App\Models\BreakTime;
 use Carbon\Carbon;
+use App\Http\Requests\AttendanceTimeRequest;
 
 class AttendanceController extends Controller
 {
@@ -181,23 +183,35 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function detailRequest(Attendance $attendance)
+    public function detailRequest(AttendanceTimeRequest $request, Attendance $attendance)
     {
         // ・ユーザーが入力した「出勤・退勤」「休憩」「備考」の修正内容を受け付ける。
         // ・AttendanceTimeRequest（FormRequest）にてバリデーションを実施する。
         // ・バリデーション NG の場合は、元の画面にリダイレクトしエラーメッセージを表示する。
-        // ・バリデーション OK の場合は修正申請テーブルに申請内容を登録し、
-        //   ステータスを「承認待ち」として保存する。
-        // ・申請後は、一般ユーザー側の申請一覧「承認待ち」に表示され、
-        //   管理者の修正申請承認画面にも表示される。
+        // ・バリデーション OK の場合は修正申請テーブルに申請内容を登録し、ステータスを「承認待ち」として保存する。
+        // ・申請後は、一般ユーザー側の申請一覧「承認待ち」に表示され、管理者の修正申請承認画面にも表示される。
         // ・すでに承認待ち状態の勤怠に対しては追加の修正は行えず、
         //   「承認待ちのため修正はできません。」を表示する。
 
         $headerType = 'user';
 
-        return view('attendance.attendance_detail', [
-            'attendances' => $attendance,
-            'headerType' => $headerType,
+        $validated = $request->validated();
+
+        $clockIn = $validated['clock_in_at'];
+        $clockOut = $validated['clock_out_at'];
+        $breaksJson = json_encode($validated['breaks']);
+        $note = $validated['note'];
+
+        AttendanceCorrection::create([
+            'attendance_id' => $attendance->id,
+            'requested_clock_in_at' => $clockIn,
+            'requested_clock_out_at' => $clockOut,
+            'requested_breaks' => $breaksJson,
+            'requested_notes' => $note,
+            'status' => 0,
         ]);
+
+        return redirect()->route('attendance.detail', $attendance->id);
     }
 }
+

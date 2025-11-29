@@ -9,14 +9,74 @@
 .attendance-detail {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
     gap: 28px;
     padding: 50px 16px;
 }
 
 .attendance-detail__title {
+    padding-left: 12px;
+    border-left: 8px solid #000;
     font-size: 30px;
     font-weight: 700;
+}
+
+.detail__form {
+    display: flex;
+    flex-direction: column;
+    width: 650px;
+    border-radius: 6px;
+    font-weight: 700;
+}
+
+.detail__group {
+    display: flex;
+    padding: 30px 40px;
+    gap: 30px;
+    background-color: #fff;
+    border-bottom: 4px solid #f0eff2;
+}
+
+.detail__label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 120px;
+    color: #737373;
+}
+
+.detail__date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 40px;
+}
+
+.detail__input {
+    display: block;
+    width: 120px;
+    padding: 4px 8px;
+    background-color: #ffffff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.detail__textarea {
+    width: 320px;
+}
+
+.detail__button {
+    align-self: flex-end;
+    margin-top: 20px;
+    margin-right: 40px;
+    padding: 5px 30px;
+    border-radius: 6px;
+    font-size: 20px;
+    background-color: #000;
+    color: #fff;
 }
 
 .detail__error {

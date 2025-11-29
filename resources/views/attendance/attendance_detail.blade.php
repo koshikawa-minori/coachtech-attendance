@@ -22,12 +22,14 @@
 
                 <div class="detail__group">
                     <label class="detail__label">日付</label>
-                    <div class="detail__year">
-                        {{ optional(\Carbon\Carbon::parse($attendance->work_date))->format('Y年') }}
-                    </div>
-
                     <div class="detail__date">
-                        {{ optional(\Carbon\Carbon::parse($attendance->work_date))->format('m月d日') }}
+                        <div class="detail__year">
+                            {{ optional(\Carbon\Carbon::parse($attendance->work_date))->format('Y年') }}
+                        </div>
+
+                        <div class="detail__date">
+                            {{ optional(\Carbon\Carbon::parse($attendance->work_date))->format('m月d日') }}
+                        </div>
                     </div>
                 </div>
 
@@ -72,7 +74,7 @@
 
                 <div class="detail__group">
                     <label class="detail__label" for="note">備考</label>
-                    <textarea class="detail__input" id="note" name="note">{{ old('note') }}</textarea>
+                    <textarea class="detail__input detail__textarea" id="note" name="note">{{ old('note') }}</textarea>
                     @error('note')
                         <p class="detail__error">{{ $message }}</p>
                     @enderror

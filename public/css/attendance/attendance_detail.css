@@ -19,6 +19,11 @@
     font-weight: 700;
 }
 
+.detail__error {
+    margin-top: 2px;
+    color: #ff5555;
+}
+
 @media (min-width: 1400px) {
 
     .attendance__button{

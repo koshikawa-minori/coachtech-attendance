@@ -34,10 +34,10 @@
                 <div class="detail__group">
                     <label class="detail__label" for="clock_in_at">出勤・退勤</label>
                     <input class="detail__input" id="clock_in_at" type="time" name="clock_in_at"
-                    value="{{ optional(\Carbon\Carbon::parse($attendance->clock_in_at))->format('H:i') }}" required>
+                    value="{{ old('clock_in_at', optional(\Carbon\Carbon::parse($attendance->clock_in_at))->format('H:i')) }}" required>
                     <span>～</span>
                     <input class="detail__input" id="clock_out_at" type="time" name="clock_out_at"
-                    value="{{ optional(\Carbon\Carbon::parse($attendance->clock_out_at))->format('H:i') }}" required>
+                    value="{{ old('clock_out_at',optional(\Carbon\Carbon::parse($attendance->clock_out_at))->format('H:i')) }}" required>
                     @error('clock_in_at')
                         <p class="detail__error">{{ $message }}</p>
                     @enderror
@@ -49,10 +49,10 @@
                 <div class="detail__group">
                     <label class="detail__label" for="break_start_0">休憩</label>
                     <input class="detail__input" id="break_start_0" type="time" name="breaks[0][start]"
-                    value="{{ optional(\Carbon\Carbon::parse($attendance->breakTimes->get(0)?->break_start_at))->format('H:i') }}" required>
+                    value="{{ old('breaks.0.start', optional(\Carbon\Carbon::parse($attendance->breakTimes->get(0)?->break_start_at))->format('H:i')) }}" required>
                     <span>～</span>
                     <input class="detail__input" id="break_end_0" type="time" name="breaks[0][end]"
-                    value="{{ optional(\Carbon\Carbon::parse($attendance->breakTimes->get(0)?->break_end_at))->format('H:i') }}" required>
+                    value="{{ old('breaks.0.end', optional(\Carbon\Carbon::parse($attendance->breakTimes->get(0)?->break_end_at))->format('H:i')) }}" required>
                     @error('breaks.0.start')
                         <p class="detail__error">{{ $message }}</p>
                     @enderror
@@ -64,10 +64,10 @@
                 <div class="detail__group">
                     <label class="detail__label" for="break_start_1">休憩２</label>
                     <input class="detail__input" id="break_start_1" type="time" name="breaks[1][start]"
-                    value="{{ optional(\Carbon\Carbon::parse($attendance->breakTimes->get(1)?->break_start_at))->format('H:i') }}">
+                    value="{{ old('breaks.1.start', optional(\Carbon\Carbon::parse($attendance->breakTimes->get(1)?->break_start_at))->format('H:i')) }}">
                     <span>～</span>
                     <input class="detail__input" id="break_end_1" type="time" name="breaks[1][end]"
-                    value="{{ optional(\Carbon\Carbon::parse($attendance->breakTimes->get(1)?->break_end_at))->format('H:i') }}">
+                    value="{{ old('breaks.1.end', optional(\Carbon\Carbon::parse($attendance->breakTimes->get(1)?->break_end_at))->format('H:i')) }}">
                 </div>
 
                 <div class="detail__group">

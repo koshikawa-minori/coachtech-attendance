@@ -199,13 +199,21 @@ class AttendanceController extends Controller
 
         $clockIn = $validated['clock_in_at'];
         $clockOut = $validated['clock_out_at'];
+
+        $workDate = $attendance->work_date;
+        $workDateTime = \Carbon\Carbon::parse($workDate)->format('Y-m-d');
+        $clockInDateTime = $workDateTime . ' ' . $clockIn;
+        $clockOutDateTime = $workDateTime . ' ' . $clockOut;
+        $clockInCarbon = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $clockInDateTime);
+        $clockOutCarbon = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $clockOutDateTime);
+
         $breaksJson = json_encode($validated['breaks']);
         $note = $validated['note'];
 
         AttendanceCorrection::create([
             'attendance_id' => $attendance->id,
-            'requested_clock_in_at' => $clockIn,
-            'requested_clock_out_at' => $clockOut,
+            'requested_clock_in_at' => $clockInCarbon,
+            'requested_clock_out_at' => $clockOutCarbon,
             'requested_breaks' => $breaksJson,
             'requested_notes' => $note,
             'status' => 0,

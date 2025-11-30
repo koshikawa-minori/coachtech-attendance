@@ -25,16 +25,26 @@
     display: flex;
     flex-direction: column;
     width: 650px;
-    border-radius: 6px;
     font-weight: 700;
+}
+
+.detail__card {
+    overflow: hidden;
+    background-color: #fff;
+    border-radius: 6px;
 }
 
 .detail__group {
     display: flex;
+    flex-wrap: wrap;
     padding: 30px 40px;
     gap: 30px;
     background-color: #fff;
     border-bottom: 4px solid #f0eff2;
+}
+
+.detail__group:last-child {
+    border-bottom: none;
 }
 
 .detail__label {
@@ -45,12 +55,27 @@
     color: #737373;
 }
 
+.detail__display {
+    display: flex;
+    align-items: center;
+    width: 320px;
+    padding-left: 40px;
+}
+
 .detail__date {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+    width: 320px;
+    gap: 40px;
+    padding-left: 40px;
+}
+
+.detail__days {
+    display: flex;
     justify-content: center;
     flex: 1;
-    gap: 40px;
+    padding-left: 50px;
 }
 
 .detail__input {
@@ -62,6 +87,8 @@
     border-radius: 4px;
     font-size: 14px;
     text-align: center;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .detail__textarea {
@@ -74,25 +101,22 @@
     margin-right: 40px;
     padding: 5px 30px;
     border-radius: 6px;
-    font-size: 20px;
     background-color: #000;
+    font-size: 20px;
     color: #fff;
 }
 
 .detail__error {
+    flex-basis: 100%;
     margin-top: 2px;
+    margin-left: 150px;
     color: #ff5555;
 }
 
-@media (min-width: 1400px) {
-
-    .attendance__button{
-        gap: 80px;
-    }
-
-    .attendance__text {
-        font-size: 26px;
-    }
+.detail__message {
+    align-self: flex-end;
+    margin-top: 20px;
+    color: #ff5555;
 }
 
 /*時計アイコン非表示*/
@@ -106,4 +130,13 @@
     -webkit-appearance: none;
 }
 
+@media (min-width: 1400px) {
 
+    .attendance__button{
+        gap: 80px;
+    }
+
+    .attendance__text {
+        font-size: 26px;
+    }
+}

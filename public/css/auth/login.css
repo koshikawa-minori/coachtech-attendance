@@ -2,8 +2,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 28px;
     padding: 50px 16px;
+    min-height: 100vh;
 }
 
 .login__title {
@@ -15,7 +17,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: 40px;
     width: 380px;
 }
 
@@ -26,7 +28,7 @@
 }
 
 .login__label {
-    font-size: 16px;
+    font-size: 24px;
     font-weight: 700;
 }
 

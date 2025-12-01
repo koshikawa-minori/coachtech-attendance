@@ -4,10 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\UserRequestController;
+use App\Http\Controllers\AttendanceCorrectionController;
+use App\Http\Controllers\AdminAttendanceCorrectionController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StaffController;
-use App\Http\Controllers\AdminRequestController;
 
 // メール認証誘導画面
 Route::view('/register/verify', 'auth.register_verify', ['headerType' => 'auth'])
@@ -55,10 +55,7 @@ Route::middleware(['auth'])->group(function()
     // 勤怠詳細画面＿修正申請（一般ユーザー）
     Route::post('/attendance/detail/{attendance}', [AttendanceController::class, 'detailRequest'])->name('attendance.detail.request');
     // 申請一覧画面（一般ユーザー）
-    Route::get('/requests', function ()
-    {
-        return view('request.request_list');
-    })->name('requests.index');
+    Route::get('/requests',[AttendanceCorrectionController::class, 'index'])->name('requests.index');
 
 
     //admin

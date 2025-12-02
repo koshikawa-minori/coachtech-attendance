@@ -93,6 +93,7 @@
 
 .detail__textarea {
     width: 320px;
+    text-align: left;
 }
 
 .detail__button {

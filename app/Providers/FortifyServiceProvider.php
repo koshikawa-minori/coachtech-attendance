@@ -21,7 +21,6 @@ use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Requests\FortifyLoginRequest;
 
-
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -48,7 +47,7 @@ class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($throttleKey);
         });
 
-         // ログイン画面
+        // ログイン画面
         Fortify::loginView(function () {
             return view('auth.login', ['headerType' => 'auth']);
         });
@@ -80,7 +79,7 @@ class FortifyServiceProvider extends ServiceProvider
             }
         });
 
-        // ログアウト後は /login へ
+        // ログアウト後は /login・admin/login へ
         $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
             public function toResponse($request)
             {
@@ -95,9 +94,20 @@ class FortifyServiceProvider extends ServiceProvider
 
         // ログイン認証
         Fortify::authenticateUsing(function (Request $request) {
+            $isAdminLogin = ($request->login_type === 'admin');
             $user = User::where('email', $request->email)->first();
 
-            if ($user && Hash::check($request->password, $user->password)) {
+            if($isAdminLogin) {
+                if($user && $user->is_admin && Hash::check($request->password, $user->password)) {
+                    return $user;
+                }
+
+                throw ValidationException::withMessages([
+                'email' => 'ログイン情報が登録されていません',
+                ]);
+            }
+
+            if ($user && ! $user->is_admin && Hash::check($request->password, $user->password)) {
                 return $user;
             }
 
@@ -105,7 +115,6 @@ class FortifyServiceProvider extends ServiceProvider
                 'email' => 'ログイン情報が登録されていません',
             ]);
         });
-
 
     }
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Admin;
+use App\Models\User;
 use App\Models\Attendance;
 
 class AttendanceCorrection extends Model
@@ -30,7 +30,7 @@ class AttendanceCorrection extends Model
 
     public function admin()
     {
-        return $this->belongsTo(Admin::class, 'reviewed_admin_id');
+        return $this->belongsTo(User::class, 'reviewed_admin_id');
     }
 
     public function attendance()

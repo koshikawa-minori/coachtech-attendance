@@ -19,7 +19,7 @@ return new class extends Migration
             $table->json('requested_breaks')->nullable();
             $table->text('requested_notes')->nullable();
             $table->boolean('status')->default(false);
-            $table->foreignId('reviewed_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignId('reviewed_admin_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamps();
         });

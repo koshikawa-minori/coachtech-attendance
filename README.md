@@ -5,7 +5,8 @@
 
 ### 1. Docker ビルド
 ```bash
-git clone https://
+git clone https://github.com/koshikawa-minori/coachtech-attendance
+cd coachtech-attendance
 docker-compose up -d --build
 ```
 
@@ -17,7 +18,7 @@ cp .env.example .env  #環境変数を変更
 ```
 - DB 接続情報（docker-compose.yml の設定と一致させる）
 
-- キャッシュ設定（デフォルト database だとエラーになるため file に変更する）
+- キャッシュ設定（`.env` の CACHE_DRIVER を `file` に変更してください。）
 
 ```bash
 php artisan key:generate
@@ -26,27 +27,28 @@ php artisan db:seed
 ```
 
 ## 使用技術（実行環境）
-- PHP 8.x
+- PHP 8.2+
 - Laravel 12.x
 - MySQL 8.0
 - nginx 1.21
 
 ## ER図
-![ER図](docs/erd/erd-coachtech-attendance.png)
+![ER図](docs/erd/coachtech-attendance.drawio.png)
 
 ## 開発環境URL
-- 開発環境: http://localhost/
+- 一般ユーザーログイン: http://localhost/login
+- 管理者ログイン: http://localhost/admin/login
 - phpMyAdmin: http://localhost:8080/
-
 
 ## テストユーザー情報
 
 | ユーザー種別 | メールアドレス | パスワード |
 |---------------|----------------|-------------|
-| 一般ユーザー | test@example.com | password |
+| 一般ユーザー | reina.n@example.com | password |
+| 管理ユーザー | admin@example.com | password |
 
 ※本アプリではメール認証を実装しています。
-シードユーザー（test@example.com）は未認証のため、
+一般ユーザー（reina.n@example.com）は未認証のため、
 ログイン前にメール認証を完了させてください。
 
 
@@ -81,7 +83,7 @@ exit
 exit
 ```
 
-### 2..env.testing を作成（プロジェクト直下）
+### 2. .env.testing を作成（プロジェクト直下）
 ```env
 APP_ENV=testing
 APP_KEY=

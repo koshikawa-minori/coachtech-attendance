@@ -38,6 +38,12 @@ Route::post('/email/verification-notification', function (Request $request)
 
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+//admin
+// 管理者用ログイン画面
+Route::get('/admin/login', function () {
+    return view('admin.auth.admin_login');
+})->name('admin.login');
+
 // 認証必須ページ
 Route::middleware(['auth'])->group(function()
 {
@@ -57,9 +63,7 @@ Route::middleware(['auth'])->group(function()
     // 申請一覧画面（一般ユーザー）
     Route::get('/requests',[AttendanceCorrectionController::class, 'index'])->name('requests.index');
 
-
     //admin
-    // ログアウト処理（管理者）
     // 勤怠一覧画面（管理者）
     // 勤怠詳細画面（管理者）
     // スタッフ一覧画面（管理者）

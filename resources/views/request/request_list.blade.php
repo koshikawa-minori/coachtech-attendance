@@ -52,11 +52,11 @@
                             </td>
 
                             <td class="table-detail">
-                                {{--@if ($attendanceForDate)
-                                    <a class="button-detail" href="{{ route('requests.index', ['attendance' => $attendanceForDate->id]) }}">詳細</a>
-                                @else}--}}
+                                @if ( optional($attendanceCorrection->attendance)->id )
+                                    <a class="button-detail" href="{{ route('attendance.detail', ['attendance' => $attendanceCorrection->attendance->id]) }}">詳細</a>
+                                @else
                                     <button class="button-detail">詳細</button>
-                                {{--@endif--}}
+                                @endif
                             </td>
                         </tr>
                     @endforeach

@@ -11,9 +11,11 @@
         <div class="attendance-detail">
             <h1 class="attendance-detail__title">勤怠詳細</h1>
 
+            @php
+                $isReadOnly = $attendance->attendanceCorrection && $attendance->attendanceCorrection->status == false;
+            @endphp
             <form class="detail__form" method="POST" action="{{ route('attendance.detail.request', ['attendance' => $attendance->id]) }}" novalidate>
                 @csrf
-
                 <div class="detail__card">
                     <div class="detail__group">
                         <label class="detail__label">名前</label>
@@ -38,10 +40,10 @@
                     <div class="detail__group">
                         <label class="detail__label" for="clock_in_at">出勤・退勤</label>
                         <input class="detail__input" id="clock_in_at" type="time" name="clock_in_at"
-                        value="{{ old('clock_in_at', optional($attendance->clock_in_at)->format('H:i')) }}" required>
+                        value="{{ old('clock_in_at', optional($attendance->clock_in_at)->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
                         <span>～</span>
                         <input class="detail__input" id="clock_out_at" type="time" name="clock_out_at"
-                        value="{{ old('clock_out_at', optional($attendance->clock_out_at)->format('H:i')) }}" required>
+                        value="{{ old('clock_out_at', optional($attendance->clock_out_at)->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
                         @error('clock_in_at')
                             <p class="detail__error">{{ $message }}</p>
                         @enderror
@@ -53,10 +55,10 @@
                     <div class="detail__group">
                         <label class="detail__label" for="break_start_0">休憩</label>
                         <input class="detail__input" id="break_start_0" type="time" name="breaks[0][start]"
-                            value="{{ old('breaks.0.start', optional($attendance->breakTimes->get(0)?->break_start_at)->format('H:i')) }}" required>
+                            value="{{ old('breaks.0.start', optional($attendance->breakTimes->get(0)?->break_start_at)->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
                         <span>～</span>
                         <input class="detail__input" id="break_end_0" type="time" name="breaks[0][end]"
-                            value="{{ old('breaks.0.end', optional($attendance->breakTimes->get(0)?->break_end_at)->format('H:i')) }}" required>
+                            value="{{ old('breaks.0.end', optional($attendance->breakTimes->get(0)?->break_end_at)->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
                         @error('breaks.0.start')
                             <p class="detail__error">{{ $message }}</p>
                         @enderror
@@ -68,21 +70,21 @@
                     <div class="detail__group">
                         <label class="detail__label" for="break_start_1">休憩２</label>
                         <input class="detail__input" id="break_start_1" type="time" name="breaks[1][start]"
-                            value="{{ old('breaks.1.start', optional($attendance->breakTimes->get(1)?->break_start_at)->format('H:i')) }}">
+                            value="{{ old('breaks.1.start', optional($attendance->breakTimes->get(1)?->break_start_at)->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }}>
                         <span>～</span>
                         <input class="detail__input" id="break_end_1" type="time" name="breaks[1][end]"
-                            value="{{ old('breaks.1.end', optional($attendance->breakTimes->get(1)?->break_end_at)->format('H:i')) }}">
+                            value="{{ old('breaks.1.end', optional($attendance->breakTimes->get(1)?->break_end_at)->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }}>
                     </div>
 
                     <div class="detail__group">
                         <label class="detail__label" for="note">備考</label>
-                        <textarea class="detail__input detail__textarea" id="note" name="note">{{ old('note') }}</textarea>
+                        <textarea class="detail__input detail__textarea" id="note" name="note" {{ $isReadOnly ? 'disabled' : '' }}>{{ old('note') }}</textarea>
                         @error('note')
                             <p class="detail__error">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
-                @if ($attendance->attendanceCorrection && $attendance->attendanceCorrection->status == false)
+                @if ($isReadOnly)
                     <p class="detail__message">*承認待ちのため修正はできません。</p>
                 @else
                     <button class="detail__button" type="submit">修正</button>

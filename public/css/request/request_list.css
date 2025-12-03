@@ -1,16 +1,16 @@
 .request {
     display: flex;
     justify-content: center;
+    min-height: 100vh;
     background-color: #f0eff2;
 }
 
 .request-list {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    width: 650px;
+    width: 700px;
     gap: 28px;
-    padding: 50px 16px;
+    padding: 50px 0;
 }
 
 .request-list__title {
@@ -23,7 +23,7 @@
 .request .tabs {
     position: relative;
     border-bottom: none;
-    padding: 40px 16px 6px;
+    padding: 20px 16px 6px;
 }
 
 .request .tabs::after {
@@ -34,7 +34,8 @@
     width: 100%;
     height: 1px;
     background-color: #818181;
-    transform: translateX(-50%); pointer-events: none;
+    transform: translateX(-50%);
+    pointer-events: none;
 }
 
 .tab--active {
@@ -42,12 +43,12 @@
 }
 
 
-.attendance-list table {
+.request-list table {
     width: 100%;
 }
 
-.attendance-list th,
-.attendance-list td {
+.request-list th,
+.request-list td {
     padding: 8px 30px;
     font-size: 12px;
 }
@@ -86,7 +87,7 @@
 
 @media (min-width: 1400px) {
 
-.attendance-list {
+.request-list {
     width: 900px;
 }
 

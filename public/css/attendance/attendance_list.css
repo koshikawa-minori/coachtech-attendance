@@ -1,16 +1,16 @@
 .attendance {
     display: flex;
     justify-content: center;
+    min-height: 100vh;
     background-color: #f0eff2;
 }
 
 .attendance-list {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     width: 650px;
     gap: 28px;
-    padding: 50px 16px;
+    padding: 50px 0;
 }
 
 .attendance-list__title {

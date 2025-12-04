@@ -39,14 +39,6 @@ Route::post('/email/verification-notification', function (Request $request)
 
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-//admin
-// 管理者用ログイン画面
-Route::get('/admin/login', function () {
-    return view('admin.auth.admin_login', [
-        'headerType' => 'auth'
-    ]);
-})->name('admin.login');
-
 // 認証必須ページ
 Route::middleware(['auth'])->group(function()
 {
@@ -67,8 +59,17 @@ Route::middleware(['auth'])->group(function()
 
     // 申請一覧画面（一般ユーザー）
     Route::get('/requests', [AttendanceCorrectionController::class, 'index'])->name('requests.index');
+});
 
-    //admin
+//admin
+// 管理者用ログイン画面
+Route::get('/admin/login', function () {
+    return view('admin.auth.admin_login', [
+        'headerType' => 'auth'
+    ]);
+})->name('admin.login');
+
+Route::middleware(['auth', 'admin'])->group(function() {
     // 勤怠一覧画面（管理者）
     Route::get('/admin/attendance/list', [AdminController::class, 'index'])->name('admin.attendance.index');
 

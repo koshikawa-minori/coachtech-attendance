@@ -36,6 +36,7 @@
     align-items: center;
     font-size: 12px;
     color: #737373;
+    text-decoration: none;
 }
 
 .arrow {
@@ -52,9 +53,14 @@
 }
 
 .this-month__icon {
+    display: block;
     width: 18px;
     height: 18px;
-    display: block;
+}
+
+.this-month__text {
+    font-size: 18px;
+    color: #000;
 }
 
 .attendance-list table {

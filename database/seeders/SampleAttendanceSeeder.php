@@ -20,7 +20,7 @@ class SampleAttendanceSeeder extends Seeder
     {
         // ログインユーザー
         $mainUser = User::firstOrCreate(
-            ['email' => 'reina.n@example.com'],
+            ['email' => 'test@example.com'],
             [
                 'name' => '西 伶奈',
                 'password' => Hash::make('password'),

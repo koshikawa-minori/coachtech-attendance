@@ -30,12 +30,13 @@
     font-weight: 700;
 }
 
-.previous-month,
-.next-month {
+.previous-day,
+.next-day {
     display: flex;
     align-items: center;
     font-size: 12px;
     color: #737373;
+    text-decoration: none;
 }
 
 .arrow {
@@ -44,17 +45,22 @@
     font-weight: 700;
 }
 
-.this-month {
+.this-day {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 4px;
 }
 
-.this-month__icon {
+.this-day__icon {
+    display: block;
     width: 18px;
     height: 18px;
-    display: block;
+}
+
+.this-day__text {
+    font-size: 18px;
+    color: #000;
 }
 
 .attendance-list table {

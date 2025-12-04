@@ -1,34 +1,34 @@
 @extends('layouts.app')
-@section('title', '勤怠一覧')
+@section('title', '管理者勤怠一覧')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin/attendance/attendance_list.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin/attendance/admin_attendance_list.css') }}">
 @endpush
 
 @section('content')
 <main>
     <div class="attendance">
         <div class="attendance-list">
-            <h1 class="attendance-list__title">勤怠一覧</h1>
+            <h1 class="attendance-list__title">{{ $targetDay->format('Y年n月j日') }}の勤怠</h1>
             <div class="attendance-list__header">
-                <div class="previous-month">
+                <a class="previous-day" href="{{ route('admin.attendance.index', ['date'=> $previousDay]) }}">
                     <p class="arrow">←</p>
-                    <a {{--href="{{ route('attendance.index', ['month'=> $previousMonth]) }}"--}}>前月</a>
+                    <span>前日</span>
+                </a>
+                <div class="this-day">
+                    <img class="this-day__icon" src="{{ asset('images/calendar.svg') }}" alt="カレンダーアイコン">
+                    <span class="this-day__text">{{ $targetDay->format('Y/m/d') }}</span>
                 </div>
-                <div class="this-month">
-                    <img src="{{ asset('images/calendar.svg') }}" class="this-month__icon" alt="カレンダーアイコン">
-                    <span class="this-month__text">{{--{{ $startOfMonth->format('Y/m') }}--}}</span>
-                </div>
-                <div class="next-month">
-                    <a {{--href="{{ route('attendance.index', ['month'=> $nextMonth]) }}"--}}>翌月</a>
+                <a class="next-day" href="{{ route('admin.attendance.index', ['date'=> $nextDay]) }}">
+                    <span>翌日</span>
                     <p class="arrow">→</p>
-                </div>
+                </a>
             </div>
 
             <table>
                 <thead class="attendance-list__header-row">
                     <tr>
-                        <th class="table-days">日付</th>
+                        <th class="table-name">名前</th>
                         <th class="table-clock-in">出勤</th>
                         <th class="table-clock-out">退勤</th>
                         <th class="table-break">休憩</th>
@@ -38,43 +38,38 @@
                 </thead>
 
                 <tbody class="attendance-list__body-row">
-                    {{--@foreach ($dates as $date)
-                        @php
-                            $dateCarbon = \Carbon\Carbon::parse($date);
-                            $attendanceForDate = $attendances->firstWhere('work_date', $dateCarbon);
-                            $formattedDate = $dateCarbon->isoFormat('MM/DD(ddd)');
-                        @endphp
+                    @foreach ($attendances as $attendance)
                         <tr>
-                            <td class="table-days">{{ $formattedDate }}</td>
+                            <td class="table-name">{{ $attendance->user->name }}</td>
                             <td class="table-clock-in">
-                                {{ ($attendanceForDate && $attendanceForDate->clock_in_at)
-                                    ? $attendanceForDate->clock_in_at->format('H:i') : '' }}
+                                {{ ($attendance->clock_in_at)
+                                    ? $attendance->clock_in_at->format('H:i') : '' }}
                             </td>
 
                             <td class="table-clock-out">
-                                {{ ($attendanceForDate && $attendanceForDate->clock_out_at)
-                                    ? $attendanceForDate->clock_out_at->format('H:i') : '' }}
+                                {{ ($attendance->clock_out_at)
+                                    ? $attendance->clock_out_at->format('H:i') : '' }}
                             </td>
 
                             <td class="table-break-total">
-                                {{ ($attendanceForDate && $attendanceForDate->the_total_break)
-                                    ? $attendanceForDate->the_total_break : '' }}
+                                {{ ($attendance->the_total_break)
+                                    ? $attendance->the_total_break : '' }}
                             </td>
 
                             <td class="table-attendance-total">
-                                {{ ($attendanceForDate && $attendanceForDate->the_total_work)
-                                    ? $attendanceForDate->the_total_work : '' }}
+                                {{ ($attendance->the_total_work)
+                                    ? $attendance->the_total_work : '' }}
                             </td>
 
                             <td class="table-detail">
-                                @if ($attendanceForDate)
-                                    <a class="button-detail" href="{{ route('attendance.detail', ['attendance' => $attendanceForDate->id]) }}">詳細</a>
+                                @if ($attendance)
+                                    <a class="button-detail" href="{{ route('admin.attendance.detail', ['attendance' => $attendance->id]) }}">詳細</a>
                                 @else
                                     <button class="button-detail">詳細</button>
                                 @endif
                             </td>
                         </tr>
-                    @endforeach--}}
+                    @endforeach
                 </tbody>
             </table>
         </div>

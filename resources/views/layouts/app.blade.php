@@ -30,7 +30,6 @@
 
                     <form class="header__logout" method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <input type="hidden" name="logout_type" value="user">
                         <button type="submit" class="header__button">ログアウト</button>
                     </form>
                 </div>
@@ -41,7 +40,6 @@
 
                     <form class="header__logout" method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <input type="hidden" name="logout_type" value="user">
                         <button type="submit" class="header__button">ログアウト</button>
                     </form>
                 </div>

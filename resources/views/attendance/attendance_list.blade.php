@@ -11,18 +11,18 @@
         <div class="attendance-list">
             <h1 class="attendance-list__title">勤怠一覧</h1>
             <div class="attendance-list__header">
-                <div class="previous-month">
+                <a class="previous-month" href="{{ route('attendance.index', ['month'=> $previousMonth]) }}">
                     <p class="arrow">←</p>
-                    <a href="{{ route('attendance.index', ['month'=> $previousMonth]) }}">前月</a>
-                </div>
+                    <span>前月</span>
+                </a>
                 <div class="this-month">
                     <img src="{{ asset('images/calendar.svg') }}" class="this-month__icon" alt="カレンダーアイコン">
                     <span class="this-month__text">{{ $startOfMonth->format('Y/m') }}</span>
                 </div>
-                <div class="next-month">
-                    <a href="{{ route('attendance.index', ['month'=> $nextMonth]) }}">翌月</a>
+                <a class="next-month" href="{{ route('attendance.index', ['month'=> $nextMonth]) }}">
+                    <span>翌月</span>
                     <p class="arrow">→</p>
-                </div>
+                </a>
             </div>
 
             <table>

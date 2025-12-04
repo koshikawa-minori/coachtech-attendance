@@ -90,7 +90,7 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
             public function toResponse($request)
             {
-                $isAdminLogout = $request->input('logout_type');
+                $isAdminLogout = $request->input('logout_type') === 'admin';
 
                 if($isAdminLogout) {
                     return redirect()->route('admin.login');

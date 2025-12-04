@@ -44,7 +44,7 @@ php artisan db:seed
 
 | ユーザー種別 | メールアドレス | パスワード |
 |---------------|----------------|-------------|
-| 一般ユーザー | reina.n@example.com | password |
+| 一般ユーザー | test@example.com | password |
 | 管理ユーザー | admin@example.com | password |
 
 ※本アプリではメール認証を実装しています。

@@ -20,6 +20,7 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Requests\FortifyLoginRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -65,24 +66,36 @@ class FortifyServiceProvider extends ServiceProvider
             }
         });
 
-        // ログイン時未認証ならメール認証へ
+        // ログイン時リダイレクト先を分岐
         $this->app->instance(LoginResponse::class, new class implements LoginResponse {
             public function toResponse($request)
             {
                 $user = $request->user();
 
-                if ($user && method_exists($user, 'hasVerifiedEmail') && ! $user->hasVerifiedEmail()) {
-                    return redirect()->route('register.verify');
+                // 管理者なら管理者勤怠一覧画面へ
+                if ($user && $user->is_admin) {
+                    return redirect()->route('admin.attendance.index');
                 }
 
+                // 一般ユーザー未認証なら認証誘導画面へ
+                if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+                    return redirect()->route('register.verify');
+                }
+                // 一般ユーザー認証済みは勤怠登録画面へ
                 return redirect()->intended(config('fortify.home'));
             }
         });
 
-        // ログアウト後は /login・admin/login へ
+        // ログアウト後の分岐
         $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
             public function toResponse($request)
             {
+                $isAdminLogout = $request->input('logout_type');
+
+                if($isAdminLogout) {
+                    return redirect()->route('admin.login');
+                }
+
                 return redirect()->route('login');
             }
         });

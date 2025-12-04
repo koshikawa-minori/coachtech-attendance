@@ -5,8 +5,9 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCorrectionController;
-use App\Http\Controllers\AdminAttendanceCorrectionController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\AdminAttendanceCorrectionController;
 use App\Http\Controllers\StaffController;
 
 // メール認証誘導画面
@@ -41,7 +42,9 @@ Route::post('/email/verification-notification', function (Request $request)
 //admin
 // 管理者用ログイン画面
 Route::get('/admin/login', function () {
-    return view('admin.auth.admin_login');
+    return view('admin.auth.admin_login', [
+        'headerType' => 'auth'
+    ]);
 })->name('admin.login');
 
 // 認証必須ページ
@@ -58,17 +61,33 @@ Route::middleware(['auth'])->group(function()
 
     // 勤怠詳細画面（一般ユーザー）
     Route::get('/attendance/detail/{attendance}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+
     // 勤怠詳細画面＿修正申請（一般ユーザー）
     Route::post('/attendance/detail/{attendance}', [AttendanceController::class, 'detailRequest'])->name('attendance.detail.request');
+
     // 申請一覧画面（一般ユーザー）
-    Route::get('/requests',[AttendanceCorrectionController::class, 'index'])->name('requests.index');
+    Route::get('/requests', [AttendanceCorrectionController::class, 'index'])->name('requests.index');
 
     //admin
     // 勤怠一覧画面（管理者）
+    Route::get('/admin/attendance/list', [AdminController::class, 'index'])->name('admin.attendance.index');
+
     // 勤怠詳細画面（管理者）
+    Route::get('/admin/attendance/{attendance}', [AdminController::class, 'show'])->name('admin.attendance.detail');
+
     // スタッフ一覧画面（管理者）
+    Route::get('/admin/staff/list', [StaffController::class, 'index'])->name('staff.list.index');
+
     // スタッフ別勤怠一覧画面（管理者）
+    Route::get('/admin/attendance/staff/{id}', [StaffController::class, 'attendance'])->name('staff.list.attendance');
+
     // 申請一覧画面（管理者）
+    Route::get('/admin/requests', [AdminAttendanceCorrectionController::class, 'index'])->name('admin.requests.index');
+
     // 修正申請承認画面（管理者）
+
+
     // 修正申請承認処理（管理者）
+
+
 });

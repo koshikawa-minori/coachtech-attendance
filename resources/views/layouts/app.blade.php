@@ -30,6 +30,7 @@
 
                     <form class="header__logout" method="POST" action="{{ route('logout') }}">
                         @csrf
+                        <input type="hidden" name="logout_type" value="user">
                         <button type="submit" class="header__button">ログアウト</button>
                     </form>
                 </div>
@@ -40,17 +41,19 @@
 
                     <form class="header__logout" method="POST" action="{{ route('logout') }}">
                         @csrf
+                        <input type="hidden" name="logout_type" value="user">
                         <button type="submit" class="header__button">ログアウト</button>
                     </form>
                 </div>
             @elseif ($headerType === 'admin')
                 <div class="header__right">
                     <a class="header__button header__button--primary" href="{{ route('admin.attendance.index') }}">勤怠一覧</a>
-                    <a class="header__button header__button--primary" href="{{ route('admin.staff.index') }}">スタッフ一覧</a>
+                    <a class="header__button header__button--primary" href="{{ route('staff.list.index') }}">スタッフ一覧</a>
                     <a class="header__button header__button--primary" href="{{ route('admin.requests.index') }}">申請一覧</a>
 
                     <form class="header__logout" method="POST" action="{{ route('logout') }}">
                         @csrf
+                        <input type="hidden" name="logout_type" value="admin">
                         <button type="submit" class="header__button">ログアウト</button>
                     </form>
                 </div>

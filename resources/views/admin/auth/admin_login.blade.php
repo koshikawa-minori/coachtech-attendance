@@ -9,7 +9,7 @@
 @section('content')
 <main>
     <div class="login">
-        <h1 class="login__title">ログイン</h1>
+        <h1 class="login__title">管理者ログイン</h1>
 
         <form class="login__form" method="POST" action="{{ route('login') }}" novalidate>
             @csrf

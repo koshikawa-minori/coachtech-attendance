@@ -51,22 +51,18 @@
                                     ? $attendance->clock_out_at->format('H:i') : '' }}
                             </td>
 
-                            <td class="table-break-total">
+                            <td class="table-break">
                                 {{ ($attendance->the_total_break)
                                     ? $attendance->the_total_break : '' }}
                             </td>
 
-                            <td class="table-attendance-total">
+                            <td class="table-total">
                                 {{ ($attendance->the_total_work)
                                     ? $attendance->the_total_work : '' }}
                             </td>
 
                             <td class="table-detail">
-                                @if ($attendance)
-                                    <a class="button-detail" href="{{ route('admin.attendance.detail', ['attendance' => $attendance->id]) }}">詳細</a>
-                                @else
-                                    <button class="button-detail">詳細</button>
-                                @endif
+                                <a class="button-detail" href="{{ route('admin.attendance.detail', ['attendance' => $attendance->id]) }}">詳細</a>
                             </td>
                         </tr>
                     @endforeach

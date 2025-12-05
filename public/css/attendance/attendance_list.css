@@ -37,6 +37,7 @@
     font-size: 12px;
     color: #737373;
     text-decoration: none;
+    font-size: 18px;
 }
 
 .arrow {
@@ -49,18 +50,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 8px;
 }
 
 .this-month__icon {
     display: block;
-    width: 18px;
-    height: 18px;
+    width: 28px;
+    height: 28px;
 }
 
 .this-month__text {
-    font-size: 18px;
     color: #000;
+    font-size: 24px;
 }
 
 .attendance-list table {
@@ -70,7 +71,8 @@
 .attendance-list th,
 .attendance-list td {
     padding: 8px 30px;
-    font-size: 12px;
+    text-align: center;
+    font-size: 18px;
 }
 
 .attendance-list__header-row th:first-child {
@@ -103,6 +105,7 @@
 
 .button-detail {
     color: #000;
+    text-decoration: none;
 }
 
 @media (min-width: 1400px) {

@@ -74,7 +74,7 @@ Route::middleware(['auth', 'admin'])->group(function() {
     Route::get('/admin/attendance/list', [AdminController::class, 'index'])->name('admin.attendance.index');
 
     // 勤怠詳細画面（管理者）
-    Route::get('/admin/attendance/{attendance}', [AdminController::class, 'show'])->name('admin.attendance.detail');
+    Route::get('/admin/attendance/detail/{attendance}', [AdminController::class, 'show'])->name('admin.attendance.detail');
 
     // スタッフ一覧画面（管理者）
     Route::get('/admin/staff/list', [StaffController::class, 'index'])->name('staff.list.index');

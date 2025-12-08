@@ -19,7 +19,6 @@ return new class extends Migration
             $table->timestamp('clock_out_at')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
-
             $table->unique(['user_id', 'work_date']);
         });
     }

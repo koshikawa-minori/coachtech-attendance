@@ -180,7 +180,8 @@ class AttendanceController extends Controller
 
     public function detailRequest(AttendanceTimeRequest $request, Attendance $attendance)
     {
-        if ($attendance->attendanceCorrection && $attendance->attendanceCorrection->status == false) {
+        if ($attendance->attendanceCorrection && $attendance->attendanceCorrection->status == false)
+            {
             return back()->with('error', '*承認待ちのため修正はできません。');
         }
 
@@ -193,6 +194,7 @@ class AttendanceController extends Controller
 
         $workDate = $attendance->work_date;
         $workDateTime = \Carbon\Carbon::parse($workDate)->format('Y-m-d');
+
         $clockInDateTime = $workDateTime . ' ' . $clockIn;
         $clockOutDateTime = $workDateTime . ' ' . $clockOut;
         $clockInCarbon = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $clockInDateTime);

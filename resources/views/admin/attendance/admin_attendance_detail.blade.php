@@ -14,7 +14,7 @@
             @php
                 $isReadOnly = $attendance->attendanceCorrection && $attendance->attendanceCorrection->status == false;
             @endphp
-            <form class="detail__form" method="POST" action="{{ route('attendance.detail.request', ['attendance' => $attendance->id]) }}" novalidate>
+            <form class="detail__form" method="POST" action="{{ route('admin.attendance.update', ['attendance' => $attendance->id]) }}" novalidate>
                 @csrf
                 <div class="detail__card">
                     <div class="detail__group">

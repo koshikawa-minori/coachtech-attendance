@@ -125,19 +125,3 @@
     opacity: 0;
     display: none;
 }
-
-.detail__input {
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-@media (min-width: 1400px) {
-
-    .attendance__button{
-        gap: 80px;
-    }
-
-    .attendance__text {
-        font-size: 26px;
-    }
-}

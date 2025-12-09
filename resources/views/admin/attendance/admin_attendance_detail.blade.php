@@ -78,7 +78,7 @@
 
                     <div class="detail__group">
                         <label class="detail__label" for="note">備考</label>
-                        <textarea class="detail__input detail__textarea" id="note" name="note" {{ $isReadOnly ? 'disabled' : '' }}>{{ old('note') }}</textarea>
+                        <textarea class="detail__input detail__textarea" id="note" name="note" {{ $isReadOnly ? 'disabled' : '' }}>{{ old('note', $attendance->note) }}</textarea>
                         @error('note')
                             <p class="detail__error">{{ $message }}</p>
                         @enderror

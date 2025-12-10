@@ -110,9 +110,8 @@
 
 @media (min-width: 1400px) {
 
-.attendance-list {
-    width: 900px;
-}
-
+    .attendance-list {
+        width: 900px;
+    }
 
 }

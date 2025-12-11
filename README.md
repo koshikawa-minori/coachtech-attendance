@@ -1,6 +1,63 @@
 # coachtech-attendance
 提出タグ:
 
+## 概要
+本アプリケーションは一般ユーザーと管理者の2権限を持つ勤怠管理システムです。
+勤怠登録・勤怠一覧・修正申請・承認機能などの機能が備えています。
+
+## 機能一覧
+
+### 一般ユーザー
+- 勤怠(出勤・休憩・退勤)記録
+- 勤怠一覧閲覧（月次／前月・翌月への切り替え）
+- 勤怠詳細閲覧
+- 勤怠修正申請
+
+### 管理者
+- 勤怠一覧閲覧（日次／前日・翌日への切り替え）
+- 勤怠詳細閲覧
+- スタッフ一覧閲覧
+- スタッフ別勤怠一覧閲覧
+- 申請一覧閲覧
+- 修正申請承認
+
+## 画面一覧
+
+### 一般ユーザー
+- `/register`：会員登録
+- `/login`：ログイン
+- `/attendance`：勤怠登録（出勤・休憩・退勤）
+- `/attendance/list`：勤怠一覧（月次）
+- `/attendance/detail/{id}`：勤怠詳細・修正申請
+- `/requests`：申請一覧（承認待ち・承認済み）
+
+### メール認証
+- `/register/verify`：メール認証誘導画面
+- `/email/verify`：メール認証画面
+
+### 管理者
+- `/admin/login`：管理者ログイン
+- `/admin/attendance/list`：勤怠一覧（日次）
+- `/admin/attendance/detail/{id}`：勤怠詳細・修正
+- `/admin/staff/list`：スタッフ一覧
+- `/admin/attendance/staff/{id}`：スタッフ別勤怠一覧
+- `/admin/requests`：申請一覧
+- `/admin/requests/{id}`：申請詳細・承認
+
+## ER図
+![ER図](docs/erd/coachtech-attendance.drawio.png)
+
+## 使用技術（実行環境）
+- Laravel 12.x
+- PHP 8.2+
+- MySQL 8.0
+- nginx 1.21
+
+## 開発環境URL
+- 一般ユーザーログイン: http://localhost/login
+- 管理者ログイン: http://localhost/admin/login
+- phpMyAdmin: http://localhost:8080/
+
 ## 環境構築手順
 
 ### 1. Docker ビルド
@@ -26,20 +83,6 @@ php artisan migrate
 php artisan db:seed
 ```
 
-## 使用技術（実行環境）
-- PHP 8.2+
-- Laravel 12.x
-- MySQL 8.0
-- nginx 1.21
-
-## ER図
-![ER図](docs/erd/coachtech-attendance.drawio.png)
-
-## 開発環境URL
-- 一般ユーザーログイン: http://localhost/login
-- 管理者ログイン: http://localhost/admin/login
-- phpMyAdmin: http://localhost:8080/
-
 ## テストユーザー情報
 
 | ユーザー種別 | メールアドレス | パスワード |
@@ -52,7 +95,7 @@ php artisan db:seed
 ログイン前にメール認証を完了させてください。
 
 
-## メール認証機能（応用）
+## メール認証機能
 
 本アプリでは**Mailtrap**を利用して
 新規会員登録時にメール認証を行います。
@@ -100,6 +143,7 @@ SESSION_DRIVER=array
 QUEUE_CONNECTION=sync
 MAIL_MAILER=log
 ```
+
 ### 3.テスト用マイグレーション実行
 ```bash
 docker-compose exec php bash

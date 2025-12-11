@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Attendance;
 use App\Models\User;
+use Carbon\Carbon;
 
 class StaffController extends Controller
 {
@@ -19,7 +20,9 @@ class StaffController extends Controller
 
     public function attendance($id)
     {
-        return view('admin.staff.attendance', [
+        $headerType = 'admin';
+
+        return view('admin.staff.staff_attendance', [
             'headerType' => 'admin',
             'staffId' => $id,
         ]);

@@ -55,12 +55,12 @@
 
 .staff-list__header-row,
 .staff-list__body-row {
-    font-weight: 700;
     background-color: #fff;
+    font-weight: 700;
     color: #737373;
 }
 
-.botton-detail {
+.button-detail {
     color: #000;
     text-decoration: none;
 }

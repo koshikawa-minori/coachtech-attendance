@@ -26,11 +26,7 @@
                             <td class="table-name">{{ $user->name }}</td>
                             <td class="table-email">{{ $user->email }}</td>
                             <td class="table-month-attendance">
-                                {{-- @if ($attendanceForDate)
-                                    <a class="button-detail" href="{{ route('attendance.detail', ['attendance' => $attendanceForDate->id]) }}">詳細</a>
-                                @else--}}
-                                    <button class="button-detail">詳細</button>
-                                {{--@endif--}}
+                                <a class="button-detail" href="{{ route('staff.list.attendance', ['id' => $user->id]) }}">詳細</a>
                             </td>
                         </tr>
                     @endforeach

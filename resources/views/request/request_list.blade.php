@@ -36,26 +36,26 @@
                             </td>
 
                             <td class="table-name">
-                                {{ optional(optional($attendanceCorrection->attendance)->user)->name }}
+                                {{ $attendanceCorrection->attendance?->user?->name }}
                             </td>
 
                             <td class="table-work-date">
-                                {{ optional(optional($attendanceCorrection->attendance)->work_date)->format('Y/m/d')}}
+                                {{ $attendanceCorrection->attendance?->work_date?->format('Y/m/d') }}
                             </td>
 
                             <td class="table-request-reason">
-                                {{ $attendanceCorrection->requested_notes}}
+                                {{ $attendanceCorrection->requested_notes }}
                             </td>
 
                             <td class="table-request-at">
-                                {{ $attendanceCorrection->created_at->format('Y/m/d')}}
+                                {{ $attendanceCorrection->created_at->format('Y/m/d') }}
                             </td>
 
                             <td class="table-detail">
-                                @if ( optional($attendanceCorrection->attendance)->id )
+                                @if ($attendanceCorrection->attendance?->id)
                                     <a class="button-detail" href="{{ route('attendance.detail', ['attendance' => $attendanceCorrection->attendance->id]) }}">詳細</a>
                                 @else
-                                    <button class="button-detail">詳細</button>
+                                    <button class="button-detail" type="button">詳細</button>
                                 @endif
                             </td>
                         </tr>

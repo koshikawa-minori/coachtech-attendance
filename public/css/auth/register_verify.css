@@ -1,8 +1,3 @@
-.header__center,
-.header__right {
-    display: none;
-}
-
 .register-verify {
     display: flex;
     padding: 0 16px;

@@ -20,7 +20,7 @@
                     {{ $currentTime }}
                 </div>
 
-                <form method="POST" action="{{ route('attendance.store')}}">
+                <form method="POST" action="{{ route('attendance.store') }}">
                     @csrf
                     <input type="hidden" name="action_type" value="clock_in">
                     <button class="attendance__button--inOut" type="submit">出勤</button>

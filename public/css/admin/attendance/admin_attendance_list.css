@@ -34,7 +34,6 @@
 .next-day {
     display: flex;
     align-items: center;
-    font-size: 12px;
     color: #737373;
     text-decoration: none;
     font-size: 18px;
@@ -110,9 +109,8 @@
 
 @media (min-width: 1400px) {
 
-.attendance-list {
-    width: 900px;
-}
-
+    .attendance-list {
+        width: 900px;
+    }
 
 }

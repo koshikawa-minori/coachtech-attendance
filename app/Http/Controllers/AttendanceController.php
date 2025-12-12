@@ -121,7 +121,8 @@ class AttendanceController extends Controller
 
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $userId = Auth::id();
         $headerType = 'user';
 
@@ -138,32 +139,44 @@ class AttendanceController extends Controller
         $startOfMonth = $targetMonth ->copy()->startOfMonth();
         $endOfMonth = $targetMonth ->copy()->endOfMonth();
 
-        // 今月の勤怠取得
-        $attendances = Attendance::where('user_id', $userId)->whereBetween('work_date', [$startOfMonth, $endOfMonth])->get();
+        // 今月の勤怠取得 work_dateをキーにする
+        $attendancesByDate = Attendance::where('user_id', $userId)
+        ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+        ->get()
+        ->keyBy(function (Attendance $attendance) {
+            return $attendance->work_date->format('Y-m-d');
+        });
 
         // 前月と翌月リンクの処理
         $previousMonth = $targetMonth->copy()->subMonth()->format('Y-m');
         $nextMonth = $targetMonth->copy()->addMonth()->format('Y-m');
 
-        // その月の月初から月末までのリスト作り
-        $startDateTime = $startOfMonth->copy();
-        $endDateTime = $endOfMonth->copy();
+        // 表示データ作成
+        $rows = [];
+        $datePointer = $startOfMonth->copy();
 
-        $dates = [];
-        $diffDays = $startDateTime->diffInDays($endDateTime);
-        for ($dayIndex = 0; $dayIndex <= $diffDays; $dayIndex++)
-        {
-            $dates[] = $startDateTime->format('Y-m-d');
-            $startDateTime->addDays();
+        while ($datePointer->lte($endOfMonth)) {
+            $dateKey = $datePointer->format('Y-m-d');
+            $attendanceForDate = $attendancesByDate->get($dateKey);
+
+            $rows[] = [
+                'formatted_date' => $datePointer->isoFormat('MM/DD(ddd)'),
+                'clock_in' => $attendanceForDate?->clock_in_at?->format('H:i'),
+                'clock_out' => $attendanceForDate?->clock_out_at?->format('H:i'),
+                'break_total' => $attendanceForDate?->the_total_break,
+                'work_total' => $attendanceForDate?->the_total_work,
+                'attendance_id' => $attendanceForDate?->id,
+            ];
+
+            $datePointer->addDay();
         }
 
         return view('attendance.attendance_list', [
-            'attendances' => $attendances,
+            'headerType' => $headerType,
+            'rows' => $rows,
             'startOfMonth' => $startOfMonth,
             'previousMonth' => $previousMonth,
             'nextMonth' => $nextMonth,
-            'dates' => $dates,
-            'headerType' => $headerType,
         ]);
     }
 
@@ -193,12 +206,12 @@ class AttendanceController extends Controller
         $clockOut = $validated['clock_out_at'];
 
         $workDate = $attendance->work_date;
-        $workDateTime = \Carbon\Carbon::parse($workDate)->format('Y-m-d');
+        $workDateTime = Carbon::parse($workDate)->format('Y-m-d');
 
         $clockInDateTime = $workDateTime . ' ' . $clockIn;
         $clockOutDateTime = $workDateTime . ' ' . $clockOut;
-        $clockInCarbon = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $clockInDateTime);
-        $clockOutCarbon = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $clockOutDateTime);
+        $clockInCarbon = Carbon::createFromFormat('Y-m-d H:i', $clockInDateTime);
+        $clockOutCarbon = Carbon::createFromFormat('Y-m-d H:i', $clockOutDateTime);
 
         $breaksJson = json_encode($validated['breaks']);
         $note = $validated['note'];

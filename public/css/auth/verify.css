@@ -1,8 +1,3 @@
-.header__center,
-.header__right {
-    display: none;
-}
-
 .verify {
     display: flex;
     justify-content: center;

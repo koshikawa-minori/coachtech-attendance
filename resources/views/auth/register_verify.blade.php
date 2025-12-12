@@ -9,9 +9,7 @@
 <main>
     <div class="register-verify">
         <div class="register-verify__group">
-            <h1 class="register-verify__title">会員登録が完了しました。
-            </h1>
-
+            <h1 class="register-verify__title">会員登録が完了しました。</h1>
             <p class="register-verify__text">
             登録していただいたメールアドレスに認証メールを送付しました。<br>
             メールに記載されたリンクを開いて認証を完了してください。<br>

@@ -39,10 +39,16 @@ class AdminController extends Controller
 
     public function show(Attendance $attendance)
     {
+        $attendance->load([
+            'user',
+            'breakTimes',
+            'attendanceCorrection',
+        ]);
+
         return view('admin.attendance.admin_attendance_detail', [
         'headerType' => 'admin',
         'attendance' => $attendance,
-    ]);
+        ]);
     }
 
     public function update(AttendanceTimeRequest $request, Attendance $attendance)
@@ -58,19 +64,19 @@ class AdminController extends Controller
         $clockOut = $validated['clock_out_at'];
 
         $workDate = $attendance->work_date;
-        $workDateTime = \Carbon\Carbon::parse($workDate)->format('Y-m-d');
+        $workDateTime = Carbon::parse($workDate)->format('Y-m-d');
 
         $clockInDateTime = $workDateTime . ' ' . $clockIn;
         $clockOutDateTime = $workDateTime . ' ' . $clockOut;
-        $clockInCarbon = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $clockInDateTime);
-        $clockOutCarbon = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $clockOutDateTime);
+        $clockInCarbon = Carbon::createFromFormat('Y-m-d H:i', $clockInDateTime);
+        $clockOutCarbon = Carbon::createFromFormat('Y-m-d H:i', $clockOutDateTime);
 
-        $note = $validated['note'];
+        $notes = $validated['note'];
 
         $attendance->update([
             'clock_in_at' => $clockInCarbon,
             'clock_out_at' => $clockOutCarbon,
-            'notes' => $note,
+            'notes' => $notes,
         ]);
 
         $attendance->breakTimes()->delete();
@@ -85,8 +91,8 @@ class AdminController extends Controller
 
                 $breakStartDateTime = $workDateTime . ' ' . $breakStart;
                 $breakEndDateTime = $workDateTime . ' ' . $breakEnd;
-                $breakStartDateTimeCarbon = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $breakStartDateTime);
-                $breakEndDateTimeCarbon = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $breakEndDateTime);
+                $breakStartDateTimeCarbon = Carbon::createFromFormat('Y-m-d H:i', $breakStartDateTime);
+                $breakEndDateTimeCarbon = Carbon::createFromFormat('Y-m-d H:i', $breakEndDateTime);
 
                 BreakTime::create([
                     'attendance_id' => $attendance->id,

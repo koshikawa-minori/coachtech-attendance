@@ -87,13 +87,13 @@
 
 .button-detail {
     color: #000;
+    text-decoration: none;
 }
 
 @media (min-width: 1400px) {
 
-.request-list {
-    width: 900px;
-}
-
+    .request-list {
+        width: 900px;
+    }
 
 }

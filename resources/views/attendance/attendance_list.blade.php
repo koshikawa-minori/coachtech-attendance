@@ -38,39 +38,23 @@
                 </thead>
 
                 <tbody class="attendance-list__body-row">
-                    @foreach ($dates as $date)
-                        @php
-                            $dateCarbon = \Carbon\Carbon::parse($date);
-                            $attendanceForDate = $attendances->firstWhere('work_date', $dateCarbon);
-                            $formattedDate = $dateCarbon->isoFormat('MM/DD(ddd)');
-                        @endphp
+                    @foreach ($rows as $row)
                         <tr>
-                            <td class="table-days">{{ $formattedDate }}</td>
-                            <td class="table-clock-in">
-                                {{ ($attendanceForDate && $attendanceForDate->clock_in_at)
-                                    ? $attendanceForDate->clock_in_at->format('H:i') : '' }}
-                            </td>
+                            <td class="table-days">{{ $row['formatted_date'] }}</td>
 
-                            <td class="table-clock-out">
-                                {{ ($attendanceForDate && $attendanceForDate->clock_out_at)
-                                    ? $attendanceForDate->clock_out_at->format('H:i') : '' }}
-                            </td>
+                            <td class="table-clock-in">{{ $row['clock_in'] ?? '' }}</td>
 
-                            <td class="table-break-total">
-                                {{ ($attendanceForDate && $attendanceForDate->the_total_break)
-                                    ? $attendanceForDate->the_total_break : '' }}
-                            </td>
+                            <td class="table-clock-out">{{ $row['clock_out'] ?? '' }}</td>
 
-                            <td class="table-attendance-total">
-                                {{ ($attendanceForDate && $attendanceForDate->the_total_work)
-                                    ? $attendanceForDate->the_total_work : '' }}
-                            </td>
+                            <td class="table-break-total">{{ $row['break_total'] ?? '' }}</td>
+
+                            <td class="table-attendance-total">{{ $row['work_total'] ?? '' }}</td>
 
                             <td class="table-detail">
-                                @if ($attendanceForDate)
-                                    <a class="button-detail" href="{{ route('attendance.detail', ['attendance' => $attendanceForDate->id]) }}">詳細</a>
+                                @if ($row['attendance_id'])
+                                    <a class="button-detail" href="{{ route('attendance.detail', ['attendance' => $row['attendance_id']]) }}">詳細</a>
                                 @else
-                                    <button class="button-detail">詳細</button>
+                                    <button class="button-detail" type="button">詳細</button>
                                 @endif
                             </td>
                         </tr>

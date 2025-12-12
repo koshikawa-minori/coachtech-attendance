@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\Auth;
 
 class AttendanceCorrectionController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $headerType = 'user';
         $userId = Auth::id();
+
         // ログインユーザーの申請だけに絞る
-        $attendanceCorrectionQuery = AttendanceCorrection::whereHas('attendance', function($query) use ($userId) {
-            $query->where('user_id', $userId);
+        $attendanceCorrectionQuery = AttendanceCorrection::with(['attendance.user'])
+        ->whereHas('attendance', function($queryBuilder) use ($userId) {
+            $queryBuilder->where('user_id', $userId);
         });
 
         $page = $request->query('page', 'wait');

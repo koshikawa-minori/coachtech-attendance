@@ -87,8 +87,8 @@
     border-radius: 4px;
     font-size: 14px;
     text-align: center;
-    appearance: none;
     -webkit-appearance: none;
+    appearance: none;
 }
 
 .detail__textarea {

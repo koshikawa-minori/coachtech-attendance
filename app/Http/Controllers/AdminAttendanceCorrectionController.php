@@ -8,7 +8,7 @@ class AdminAttendanceCorrectionController extends Controller
 {
     public function index()
     {
-        return view('admin.requests.index', [
+        return view('admin.request.admin_request_list', [
             'headerType' => 'admin',
         ]);
     }

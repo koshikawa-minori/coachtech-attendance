@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceCorrectionController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminAttendanceCorrectionController;
 use App\Http\Controllers\StaffController;
 
@@ -79,18 +78,18 @@ Route::middleware(['auth', 'admin'])->group(function() {
     Route::post('/admin/attendance/detail/{attendance}', [AdminController::class, 'update'])->name('admin.attendance.update');
 
     // スタッフ一覧画面（管理者）
-    Route::get('/admin/staff/list', [StaffController::class, 'index'])->name('staff.list.index');
+    Route::get('/admin/staff/list', [StaffController::class, 'index'])->name('admin.staff.index');
 
     // スタッフ別勤怠一覧画面（管理者）
-    Route::get('/admin/attendance/staff/{id}', [StaffController::class, 'attendance'])->name('staff.list.attendance');
+    Route::get('/admin/staff/{id}/attendance', [StaffController::class, 'attendance'])->name('admin.staff.attendance');
 
     // 申請一覧画面（管理者）
     Route::get('/admin/requests', [AdminAttendanceCorrectionController::class, 'index'])->name('admin.requests.index');
 
     // 修正申請承認画面（管理者）
-
+    Route::get('/admin/requests/{id}', [AdminAttendanceCorrectionController::class, 'show'])->name('admin.requests.show');
 
     // 修正申請承認処理（管理者）
-
+    Route::post('/admin/requests/{id}', [AdminAttendanceCorrectionController::class, 'approve'])->name('admin.requests.approve');
 
 });

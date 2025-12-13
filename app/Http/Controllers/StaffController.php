@@ -20,8 +20,6 @@ class StaffController extends Controller
 
     public function attendance($id)
     {
-        $headerType = 'admin';
-
         return view('admin.staff.staff_attendance', [
             'headerType' => 'admin',
             'staffId' => $id,

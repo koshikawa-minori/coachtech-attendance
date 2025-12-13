@@ -7,34 +7,32 @@
 @endpush
 
 @section('content')
-<main>
-    <div class="login">
-        <h1 class="login__title">ログイン</h1>
+<div class="login">
+    <h1 class="login__title">ログイン</h1>
 
-        <form class="login__form" method="POST" action="{{ route('login') }}" novalidate>
-            @csrf
-            <div class="login__group">
-                <label class="login__label" for="email">メールアドレス</label>
-                <input class="login__input" id="email" type="email" name="email" value="{{ old('email') }}" required>
-                @error('email')
-                    <p class="login__error">{{ $message }}</p>
-                @enderror
-            </div>
+    <form class="login__form" method="POST" action="{{ route('login') }}" novalidate>
+        @csrf
+        <div class="login__group">
+            <label class="login__label" for="email">メールアドレス</label>
+            <input class="login__input" id="email" type="email" name="email" value="{{ old('email') }}" required>
+            @error('email')
+                <p class="login__error">{{ $message }}</p>
+            @enderror
+        </div>
 
-            <div class="login__group">
-                <label class="login__label" for="password">パスワード</label>
-                <input class="login__input" id="password" type="password" name="password" required>
-                @error('password')
-                    <p class="login__error">{{ $message }}</p>
-                @enderror
-            </div>
+        <div class="login__group">
+            <label class="login__label" for="password">パスワード</label>
+            <input class="login__input" id="password" type="password" name="password" required>
+            @error('password')
+                <p class="login__error">{{ $message }}</p>
+            @enderror
+        </div>
 
-            <button class="login__button" type="submit">ログインする</button>
-        </form>
+        <button class="login__button" type="submit">ログインする</button>
+    </form>
 
-        <p class="login__link">
-            <a href="{{ route('register') }}">会員登録はこちら</a>
-        </p>
-    </div>
-</main>
+    <p class="login__link">
+        <a href="{{ route('register') }}">会員登録はこちら</a>
+    </p>
+</div>
 @endsection

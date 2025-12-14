@@ -81,7 +81,7 @@ Route::middleware(['auth', 'admin'])->group(function() {
     Route::get('/admin/staff/list', [StaffController::class, 'index'])->name('admin.staff.index');
 
     // スタッフ別勤怠一覧画面（管理者）
-    Route::get('/admin/staff/{id}/attendance', [StaffController::class, 'attendance'])->name('admin.staff.attendance');
+    Route::get('/admin/staff/{staffId}/attendance', [StaffController::class, 'attendance'])->name('admin.staff.attendance');
 
     // 申請一覧画面（管理者）
     Route::get('/admin/requests', [AdminAttendanceCorrectionController::class, 'index'])->name('admin.requests.index');

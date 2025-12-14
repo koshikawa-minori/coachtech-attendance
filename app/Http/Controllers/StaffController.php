@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
@@ -18,11 +19,62 @@ class StaffController extends Controller
         ]);
     }
 
-    public function attendance($id)
+    public function attendance(Request $request, $staffId)
     {
+        $staffUser = User::findOrFail($staffId);
+
+        // 表示したい月判定
+        $requestedMonth = $request->query('month');
+
+        if ($requestedMonth) {
+            $targetMonth  = Carbon::parse($requestedMonth);
+        } else {
+            $targetMonth  = Carbon::now();
+        }
+
+        // 月初と月末をCarbonで作る
+        $startOfMonth = $targetMonth ->copy()->startOfMonth();
+        $endOfMonth = $targetMonth ->copy()->endOfMonth();
+
+        // 今月の勤怠取得 work_dateをキーにする
+        $attendancesByDate = Attendance::where('user_id', $staffId)
+        ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+        ->get()
+        ->keyBy(function (Attendance $attendance) {
+            return $attendance->work_date->format('Y-m-d');
+        });
+
+        // 前月と翌月リンクの処理
+        $previousMonth = $targetMonth->copy()->subMonth()->format('Y-m');
+        $nextMonth = $targetMonth->copy()->addMonth()->format('Y-m');
+
+        // 表示データ作成
+        $rows = [];
+        $datePointer = $startOfMonth->copy();
+
+        while ($datePointer->lte($endOfMonth)) {
+            $dateKey = $datePointer->format('Y-m-d');
+            $attendanceForDate = $attendancesByDate->get($dateKey);
+
+            $rows[] = [
+                'formatted_date' => $datePointer->isoFormat('MM/DD(ddd)'),
+                'clock_in' => $attendanceForDate?->clock_in_at?->format('H:i'),
+                'clock_out' => $attendanceForDate?->clock_out_at?->format('H:i'),
+                'break_total' => $attendanceForDate?->the_total_break,
+                'work_total' => $attendanceForDate?->the_total_work,
+                'attendance_id' => $attendanceForDate?->id,
+            ];
+
+            $datePointer->addDay();
+        }
+
         return view('admin.staff.staff_attendance', [
             'headerType' => 'admin',
-            'staffId' => $id,
+            'rows' => $rows,
+            'startOfMonth' => $startOfMonth,
+            'previousMonth' => $previousMonth,
+            'nextMonth' => $nextMonth,
+            'staffUser' => $staffUser,
         ]);
     }
 }

@@ -25,7 +25,7 @@
                         <td class="table-name">{{ $user->name }}</td>
                         <td class="table-email">{{ $user->email }}</td>
                         <td class="table-month-attendance">
-                            <a class="button-detail" href="{{ route('admin.staff.attendance', ['id' => $user->id]) }}">詳細</a>
+                            <a class="button-detail" href="{{ route('admin.staff.attendance', ['staffId' => $user->id]) }}">詳細</a>
                         </td>
                     </tr>
                 @endforeach

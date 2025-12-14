@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', '管理者勤怠一覧')
+@section('title', 'スタッフ別勤怠一覧')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/admin/attendance/admin_attendance_list.css') }}">

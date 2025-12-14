@@ -1,11 +1,11 @@
-.attendance {
+.staff {
     display: flex;
     justify-content: center;
     min-height: 100vh;
     background-color: #f0eff2;
 }
 
-.attendance-list {
+.staff-list {
     display: flex;
     flex-direction: column;
     width: 650px;
@@ -13,14 +13,14 @@
     padding: 50px 0;
 }
 
-.attendance-list__title {
+.staff-list__title {
     padding-left: 12px;
     border-left: 8px solid #000;
     font-size: 30px;
     font-weight: 700;
 }
 
-.attendance-list__header {
+.staff-list__header {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -64,40 +64,40 @@
     font-size: 24px;
 }
 
-.attendance-list table {
+.staff-list table {
     width: 100%;
 }
 
-.attendance-list th,
-.attendance-list td {
+.staff-list th,
+.staff-list td {
     padding: 8px 30px;
     text-align: center;
     font-size: 18px;
 }
 
-.attendance-list__header-row th:first-child {
+.staff-list__header-row th:first-child {
     border-top-left-radius: 6px;
 }
 
-.attendance-list__header-row th:last-child {
+.staff-list__header-row th:last-child {
     border-top-right-radius: 6px;
 }
 
-.attendance-list__body-row tr:last-child  td:first-child {
+.staff-list__body-row tr:last-child  td:first-child {
     border-bottom-left-radius: 6px;
 }
 
-.attendance-list__body-row tr:last-child  td:last-child {
+.staff-list__body-row tr:last-child  td:last-child {
     border-bottom-right-radius: 6px;
 }
 
-.attendance-list__header-row tr,
-.attendance-list__body-row tr {
+.staff-list__header-row tr,
+.staff-list__body-row tr {
     border-bottom: 3px solid #f0eff2;
 }
 
-.attendance-list__header-row,
-.attendance-list__body-row {
+.staff-list__header-row,
+.staff-list__body-row {
     font-weight: 700;
     background-color: #fff;
     color: #737373;
@@ -108,10 +108,24 @@
     text-decoration: none;
 }
 
+.button-csv {
+    align-self: flex-end;
+    margin-top: 20px;
+    padding: 5px 30px;
+    border-radius: 6px;
+    background-color: #000;
+    font-size: 20px;
+    color: #fff;
+}
+
 @media (min-width: 1400px) {
 
-    .attendance-list {
+    .staff-list {
         width: 900px;
+    }
+
+    .staff-list__title {
+        margin-top: 25px;
     }
 
 }

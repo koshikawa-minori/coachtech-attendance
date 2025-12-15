@@ -83,6 +83,9 @@ Route::middleware(['auth', 'admin'])->group(function() {
     // スタッフ別勤怠一覧画面（管理者）
     Route::get('/admin/staff/{staffId}/attendance', [StaffController::class, 'attendance'])->name('admin.staff.attendance');
 
+    // スタッフ別勤怠一覧画面のCSV出力（管理者）
+    Route::get('/admin/staff/{staffId}/attendance/export', [StaffController::class, 'export'])->name('admin.staff.attendance.export');
+
     // 申請一覧画面（管理者）
     Route::get('/admin/requests', [AdminAttendanceCorrectionController::class, 'index'])->name('admin.requests.index');
 

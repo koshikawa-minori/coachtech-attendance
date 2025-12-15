@@ -27,7 +27,7 @@ class StaffController extends Controller
         $requestedMonth = $request->query('month');
 
         if ($requestedMonth) {
-            $targetMonth  = Carbon::parse($requestedMonth);
+            $targetMonth  = Carbon::createFromFormat('Y-m', $requestedMonth);
         } else {
             $targetMonth  = Carbon::now();
         }
@@ -52,7 +52,8 @@ class StaffController extends Controller
         $rows = [];
         $datePointer = $startOfMonth->copy();
 
-        while ($datePointer->lte($endOfMonth)) {
+        while ($datePointer->lte($endOfMonth))
+        {
             $dateKey = $datePointer->format('Y-m-d');
             $attendanceForDate = $attendancesByDate->get($dateKey);
 
@@ -75,6 +76,60 @@ class StaffController extends Controller
             'previousMonth' => $previousMonth,
             'nextMonth' => $nextMonth,
             'staffUser' => $staffUser,
+        ]);
+    }
+
+    public function export(Request $request, $staffId)
+    {
+        $filename = 'attendance_' . now()->format('Ymd_His') . '.csv';
+
+        $requestedMonth = $request->query('month');
+
+        if ($requestedMonth) {
+            $targetMonth = Carbon::createFromFormat('Y-m', $requestedMonth);
+        } else {
+            $targetMonth = Carbon::now();
+        }
+
+        $startOfMonth = $targetMonth ->copy()->startOfMonth();
+        $endOfMonth = $targetMonth ->copy()->endOfMonth();
+
+        return response()->streamDownload(function () use ($staffId, $startOfMonth, $endOfMonth)
+        {
+
+            $stream = fopen('php://output', 'w');
+
+            fputcsv($stream, ['日付', '出勤', '退勤', '休憩', '合計']);
+
+            $attendancesByDate = Attendance::where('user_id', $staffId)
+            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+            ->get()
+            ->keyBy(function (Attendance $attendance) {
+                return $attendance->work_date->format('Y-m-d');
+            });
+
+            $datePointer = $startOfMonth->copy();
+            while ($datePointer->lte($endOfMonth))
+            {
+                $dateKey = $datePointer->format('Y-m-d');
+                $attendanceForDate = $attendancesByDate->get($dateKey);
+
+                $csvRow = [
+                    $datePointer->isoFormat('MM/DD(ddd)'),
+                    $attendanceForDate?->clock_in_at?->format('H:i') ?? '',
+                    $attendanceForDate?->clock_out_at?->format('H:i') ?? '',
+                    $attendanceForDate?->the_total_break ?? '',
+                    $attendanceForDate?->the_total_work ?? '',
+                ];
+
+                fputcsv($stream, $csvRow);
+
+                $datePointer->addDay();
+            }
+
+            fclose($stream);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }
 }

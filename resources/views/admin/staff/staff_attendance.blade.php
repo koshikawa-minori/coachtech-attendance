@@ -60,7 +60,7 @@
                 @endforeach
             </tbody>
         </table>
-        <button class="button-csv" type="submit">CSV出力</button>
+        <a class="button-csv" href="{{ route('admin.staff.attendance.export', ['staffId' => $staffUser->id, 'month' => $startOfMonth->format('Y-m')]) }}" >CSV出力</a>
     </div>
 </div>
 @endsection

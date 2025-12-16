@@ -1,0 +1,127 @@
+.request {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0eff2;
+}
+
+.request-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 28px;
+    padding: 50px 16px;
+}
+
+.request-list__title {
+    padding-left: 12px;
+    border-left: 8px solid #000;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.detail__form {
+    display: flex;
+    flex-direction: column;
+    width: 650px;
+    font-weight: 700;
+}
+
+.detail__card {
+    overflow: hidden;
+    background-color: #fff;
+    border-radius: 6px;
+}
+
+.detail__group {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 30px 40px;
+    gap: 30px;
+    background-color: #fff;
+    border-bottom: 4px solid #f0eff2;
+}
+
+.detail__group:last-child {
+    border-bottom: none;
+}
+
+.detail__label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 120px;
+    color: #737373;
+}
+
+.detail__display {
+    display: flex;
+    align-items: center;
+    width: 320px;
+    padding-left: 40px;
+}
+
+.detail__date {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 320px;
+    gap: 40px;
+    padding-left: 40px;
+}
+
+.detail__days {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    padding-left: 50px;
+}
+
+.detail__input {
+    display: block;
+    width: 120px;
+    padding: 4px 8px;
+    background-color: #ffffff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    font-size: 14px;
+    text-align: center;
+}
+
+.detail__textarea {
+    width: 320px;
+    text-align: left;
+}
+
+.detail__button {
+    align-self: flex-end;
+    margin-top: 20px;
+    margin-right: 40px;
+    padding: 5px 30px;
+    border-radius: 6px;
+    background-color: #000;
+    font-size: 20px;
+    color: #fff;
+}
+
+.detail__error {
+    flex-basis: 100%;
+    margin-top: 2px;
+    margin-left: 150px;
+    color: #ff5555;
+}
+
+.detail__message {
+    align-self: flex-end;
+    margin-top: 20px;
+    color: #ff5555;
+}
+
+/*時計アイコン非表示*/
+.detail__input::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: none;
+}

@@ -93,6 +93,6 @@ Route::middleware(['auth', 'admin'])->group(function() {
     Route::get('/admin/requests/{id}', [AdminAttendanceCorrectionController::class, 'show'])->name('admin.requests.show');
 
     // 修正申請承認処理（管理者）
-    Route::post('/admin/requests/{id}', [AdminAttendanceCorrectionController::class, 'approve'])->name('admin.requests.approve');
+    Route::post('/admin/requests/{id}/approve', [AdminAttendanceCorrectionController::class, 'approve'])->name('admin.requests.approve');
 
 });

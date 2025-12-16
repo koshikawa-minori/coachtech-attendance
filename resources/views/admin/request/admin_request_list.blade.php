@@ -10,10 +10,10 @@
     <div class="request-list">
         <h1 class="request-list__title">申請一覧</h1>
 
-        {{--<div class="tabs">
+        <div class="tabs">
             <a href="{{ route('admin.requests.index', ['page' => 'wait']) }}" class="tab {{ $page === 'wait' ? 'tab--active' : '' }}">承認待ち</a>
             <a href="{{ route('admin.requests.index', ['page' => 'done']) }}" class="tab {{ $page === 'done' ? 'tab--active' : '' }}">承認済み</a>
-        </div>--}}
+        </div>
 
         <table>
             <thead class="request-list__header-row">
@@ -27,7 +27,7 @@
                 </tr>
             </thead>
 
-            {{-- <tbody class="request-list__body-row">
+            <tbody class="request-list__body-row">
                 @foreach ($attendanceCorrections as $attendanceCorrection)
                     <tr>
                         <td class="table-situation">
@@ -51,15 +51,11 @@
                         </td>
 
                         <td class="table-detail">
-                            @if ($attendanceCorrection->attendance?->id)
-                                <a class="button-detail" href="{{ route('attendance.detail', ['attendance' => $attendanceCorrection->attendance->id]) }}">詳細</a>
-                            @else
-                                <button class="button-detail" type="button">詳細</button>
-                            @endif
+                            <a class="button-detail" href="{{ route('admin.requests.show', ['id' => $attendanceCorrection->id]) }}">詳細</a>
                         </td>
                     </tr>
                 @endforeach
-            </tbody> --}}
+            </tbody>
         </table>
     </div>
 </div>

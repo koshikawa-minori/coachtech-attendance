@@ -16,7 +16,7 @@ class AdminController extends Controller
         $requestedDay = $request->query('date');
 
         if ($requestedDay) {
-            $targetDay  = Carbon::parse($requestedDay);
+            $targetDay = Carbon::createFromFormat('Y-m-d', $requestedDay);
         } else {
             $targetDay  = Carbon::today();
         }

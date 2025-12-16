@@ -27,9 +27,9 @@ class StaffController extends Controller
         $requestedMonth = $request->query('month');
 
         if ($requestedMonth) {
-            $targetMonth  = Carbon::createFromFormat('Y-m', $requestedMonth);
+            $targetMonth  = Carbon::createFromFormat('Y-m', $requestedMonth)->startOfMonth();
         } else {
-            $targetMonth  = Carbon::now();
+            $targetMonth  = Carbon::now()->startOfMonth();
         }
 
         // 月初と月末をCarbonで作る
@@ -86,9 +86,9 @@ class StaffController extends Controller
         $requestedMonth = $request->query('month');
 
         if ($requestedMonth) {
-            $targetMonth = Carbon::createFromFormat('Y-m', $requestedMonth);
+            $targetMonth = Carbon::createFromFormat('Y-m', $requestedMonth)->startOfMonth();
         } else {
-            $targetMonth = Carbon::now();
+            $targetMonth = Carbon::now()->startOfMonth();
         }
 
         $startOfMonth = $targetMonth ->copy()->startOfMonth();

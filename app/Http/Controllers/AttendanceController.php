@@ -130,9 +130,9 @@ class AttendanceController extends Controller
         $requestedMonth = $request->query('month');
 
         if ($requestedMonth) {
-            $targetMonth  = Carbon::parse($requestedMonth);
+            $targetMonth  = Carbon::createFromFormat('Y-m', $requestedMonth)->startOfMonth();
         } else {
-            $targetMonth  = Carbon::now();
+            $targetMonth  = Carbon::now()->startOfMonth();
         }
 
         // 月初と月末をCarbonで作る

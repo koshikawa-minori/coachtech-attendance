@@ -115,7 +115,7 @@ class SampleAttendanceSeeder extends Seeder
                     'requested_clock_in_at' => $attendance->clock_in_at,
                     'requested_clock_out_at' => $attendance->clock_out_at,
                     'requested_breaks' => [],
-                    'requested_notes' => '遅延の為',
+                    'requested_notes' => '遅延のため',
                     'status' => false,
                     'reviewed_admin_id' => null,
                     'reviewed_at' => null,

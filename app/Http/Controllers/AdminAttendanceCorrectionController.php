@@ -17,9 +17,9 @@ class AdminAttendanceCorrectionController extends Controller
         $page = $request->query('page', 'wait');
 
         if ($page === 'done') {
-            $attendanceCorrectionQuery->where('status', 1);
+            $attendanceCorrectionQuery->where('status', true);
         } else {
-            $attendanceCorrectionQuery->where('status', 0);
+            $attendanceCorrectionQuery->where('status', false);
         }
 
         // // 申請データを降順で取得

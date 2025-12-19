@@ -44,7 +44,7 @@ class StaffController extends Controller
             return $attendance->work_date->format('Y-m-d');
         });
 
-        // 前月と翌月リンクの処理
+        // 表示中の月を基準に、前月・翌月の切り替え用クエリを作成
         $previousMonth = $targetMonth->copy()->subMonth()->format('Y-m');
         $nextMonth = $targetMonth->copy()->addMonth()->format('Y-m');
 
@@ -52,8 +52,7 @@ class StaffController extends Controller
         $rows = [];
         $datePointer = $startOfMonth->copy();
 
-        while ($datePointer->lte($endOfMonth))
-        {
+        while ($datePointer->lte($endOfMonth)) {
             $dateKey = $datePointer->format('Y-m-d');
             $attendanceForDate = $attendancesByDate->get($dateKey);
 

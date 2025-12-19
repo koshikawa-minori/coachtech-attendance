@@ -208,6 +208,7 @@ class AttendanceController extends Controller
         $workDate = $attendance->work_date;
         $workDateTime = Carbon::parse($workDate)->format('Y-m-d');
 
+        // Carbonで扱うために日付と時刻を結合して日時文字列を作成
         $clockInDateTime = $workDateTime . ' ' . $clockIn;
         $clockOutDateTime = $workDateTime . ' ' . $clockOut;
         $clockInCarbon = Carbon::createFromFormat('Y-m-d H:i', $clockInDateTime);

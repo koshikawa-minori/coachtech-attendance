@@ -51,7 +51,7 @@
                         </td>
 
                         <td class="table-detail">
-                            <a class="button-detail" href="{{ route('admin.requests.show', ['id' => $attendanceCorrection->id]) }}">詳細</a>
+                            <a class="button-detail" href="{{ route('admin.requests.show', ['attendanceCorrection' => $attendanceCorrection->id]) }}">詳細</a>
                         </td>
                     </tr>
                 @endforeach

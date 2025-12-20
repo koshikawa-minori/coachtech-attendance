@@ -28,9 +28,11 @@ class AdminAttendanceCorrectionController extends Controller
         return view('admin.request.admin_request_list', compact('headerType', 'attendanceCorrections', 'page'));
     }
 
-    public function show()
+    public function show(AttendanceCorrection $attendanceCorrection)
     {
         $headerType = 'admin';
-        return view('admin.request.admin_approval', compact('headerType'));
+        $attendanceCorrection->load(['attendance.user', 'attendance.breakTimes',]);
+
+        return view('admin.request.admin_approval', compact('headerType', 'attendanceCorrection'));
     }
 }

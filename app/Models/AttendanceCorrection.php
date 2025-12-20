@@ -14,7 +14,9 @@ class AttendanceCorrection extends Model
     protected $table = 'attendance_requests';
 
     protected $casts = [
-    'requested_breaks' => 'array',
+        'requested_clock_in_at' => 'datetime',
+        'requested_clock_out_at' => 'datetime',
+        'requested_breaks' => 'array',
     ];
 
     protected $fillable = [

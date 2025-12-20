@@ -214,16 +214,15 @@ class AttendanceController extends Controller
         $clockInCarbon = Carbon::createFromFormat('Y-m-d H:i', $clockInDateTime);
         $clockOutCarbon = Carbon::createFromFormat('Y-m-d H:i', $clockOutDateTime);
 
-        $breaksJson = json_encode($validated['breaks']);
         $note = $validated['note'];
 
         AttendanceCorrection::create([
             'attendance_id' => $attendance->id,
             'requested_clock_in_at' => $clockInCarbon,
             'requested_clock_out_at' => $clockOutCarbon,
-            'requested_breaks' => $breaksJson,
+            'requested_breaks' => $validated['breaks'],
             'requested_notes' => $note,
-            'status' => 0,
+            'status' => false,
         ]);
 
         return redirect()->route('attendance.detail', $attendance->id);

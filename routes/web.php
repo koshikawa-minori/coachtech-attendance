@@ -90,9 +90,9 @@ Route::middleware(['auth', 'admin'])->group(function() {
     Route::get('/admin/requests', [AdminAttendanceCorrectionController::class, 'index'])->name('admin.requests.index');
 
     // 修正申請承認画面（管理者）
-    Route::get('/admin/requests/{id}', [AdminAttendanceCorrectionController::class, 'show'])->name('admin.requests.show');
+    Route::get('/admin/requests/{attendanceCorrection}', [AdminAttendanceCorrectionController::class, 'show'])->name('admin.requests.show');
 
     // 修正申請承認処理（管理者）
-    Route::post('/admin/requests/{id}/approve', [AdminAttendanceCorrectionController::class, 'approve'])->name('admin.requests.approve');
+    Route::post('/admin/requests/{attendanceCorrection}/approve', [AdminAttendanceCorrectionController::class, 'approve'])->name('admin.requests.approve');
 
 });

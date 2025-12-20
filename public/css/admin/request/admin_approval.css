@@ -47,7 +47,7 @@
     border-bottom: none;
 }
 
-.detail__label {
+.detail__title {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -78,7 +78,7 @@
     padding-left: 50px;
 }
 
-.detail__input {
+.detail__content {
     display: block;
     width: 120px;
     padding: 4px 8px;

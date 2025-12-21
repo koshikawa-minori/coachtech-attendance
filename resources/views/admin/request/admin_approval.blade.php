@@ -10,69 +10,82 @@
     <div class="request-list">
         <h1 class="request-list__title">勤怠詳細</h1>
 
-        <div class="detail__card">
-            <div class="detail__group">
-                <div class="detail__title">名前</div>
-                <div class="detail__display">
-                    {{ $attendanceCorrection->attendance->user->name }}
-                </div>
-            </div>
-
-            <div class="detail__group">
-                <div class="detail__title">日付</div>
-                <div class="detail__date">
-                    <div class="detail__year">
-                        {{ $attendanceCorrection->attendance->work_date->format('Y年') }}
-                    </div>
-
-                    <div class="detail__days">
-                        {{ $attendanceCorrection->attendance->work_date->format('m月d日') }}
+        @php
+            $isReadOnly = $attendanceCorrection->status == true;
+            $secondBreak = $attendanceCorrection->requested_breaks[1] ?? null;
+        @endphp
+        <form action="{{ route('admin.requests.approve', ['attendanceCorrection' => $attendanceCorrection->id]) }}" method="post">
+            @csrf
+            <div class="detail__card">
+                <div class="detail__group">
+                    <div class="detail__title">名前</div>
+                    <div class="detail__display">
+                        {{ $attendanceCorrection->attendance->user->name }}
                     </div>
                 </div>
-            </div>
 
-            <div class="detail__group">
-                <div class="detail__title">出勤・退勤</div>
-                <div class="detail__content">
-                    {{ $attendanceCorrection->requested_clock_in_at->format('H:i') }}
-                </div>
-                <span>～</span>
-                <div class="detail__content">
-                    {{ $attendanceCorrection->requested_clock_out_at->format('H:i') }}
-                </div>
-            </div>
+                <div class="detail__group">
+                    <div class="detail__title">日付</div>
+                    <div class="detail__date">
+                        <div class="detail__year">
+                            {{ $attendanceCorrection->attendance->work_date->format('Y年') }}
+                        </div>
 
-            <div class="detail__group">
-                <div class="detail__title">休憩</div>
-                <div class="detail__content">
-                    {{ $attendanceCorrection->requested_breaks[0]['start'] ?? '' }}
+                        <div class="detail__days">
+                            {{ $attendanceCorrection->attendance->work_date->format('m月d日') }}
+                        </div>
+                    </div>
                 </div>
-                <span>～</span>
-                <div class="detail__content">
-                    {{ $attendanceCorrection->requested_breaks[0]['end'] ?? '' }}
-                </div>
-            </div>
 
-            <div class="detail__group">
-                <div class="detail__title">休憩２</div>
-                <div class="detail__content">
-                    {{ $attendanceCorrection->requested_breaks[1]['start'] ?? '' }}
+                <div class="detail__group">
+                    <div class="detail__title">出勤・退勤</div>
+                    <div class="detail__content">
+                        {{ $attendanceCorrection->requested_clock_in_at->format('H:i') }}
+                    </div>
+                    <span>～</span>
+                    <div class="detail__content">
+                        {{ $attendanceCorrection->requested_clock_out_at->format('H:i') }}
+                    </div>
                 </div>
-                <span>～</span>
-                <div class="detail__content">
-                    {{ $attendanceCorrection->requested_breaks[1]['end'] ?? '' }}
-                </div>
-            </div>
 
-            <div class="detail__group">
-                <div class="detail__title">備考</div>
-                <div class="detail__content">
-                    {{ $attendanceCorrection->requested_notes }}
+                <div class="detail__group">
+                    <div class="detail__title">休憩</div>
+                    <div class="detail__content">
+                        {{ $attendanceCorrection->requested_breaks[0]['start'] ?? '' }}
+                    </div>
+                    <span>～</span>
+                    <div class="detail__content">
+                        {{ $attendanceCorrection->requested_breaks[0]['end'] ?? '' }}
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <button class="detail__button" type="submit">承認</button>
+                <div class="detail__group">
+                    <div class="detail__title">休憩２</div>
+
+                    @if (!empty($secondBreak['start']) || !empty($secondBreak['end']))
+                        <div class="detail__content">
+                            {{ $secondBreak['start'] ?? '' }}
+                        </div>
+                        <span>～</span>
+                        <div class="detail__content">
+                            {{ $secondBreak['end'] ?? '' }}
+                        </div>
+                    @endif
+                </div>
+
+                <div class="detail__group">
+                    <div class="detail__title">備考</div>
+                    <div class="detail__content">
+                        {{ $attendanceCorrection->requested_notes }}
+                    </div>
+                </div>
+                @if ($isReadOnly)
+                    <p class="detail__message">承認済み</p>
+                @else
+                    <button class="detail__button" type="submit">承認</button>
+                @endif
+            </div>
+        </form>
     </div>
 </div>
 @endsection

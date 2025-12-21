@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceCorrection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class AdminAttendanceCorrectionController extends Controller
@@ -34,5 +35,28 @@ class AdminAttendanceCorrectionController extends Controller
         $attendanceCorrection->load(['attendance.user', 'attendance.breakTimes',]);
 
         return view('admin.request.admin_approval', compact('headerType', 'attendanceCorrection'));
+    }
+
+    public function approve(AttendanceCorrection $attendanceCorrection)
+    {
+        if ($attendanceCorrection->status == true)
+        {
+            return back();
+        }
+
+        DB::transaction(function ($attendanceCorrection) {
+            $attendanceCorrection->attendance->update([
+                'clock_in_at' => '',
+                'clock_out_at' => '',
+                'status' => '',
+            ]);
+            $attendanceCorrection->attendance->breakTimes->delete();
+            $attendanceCorrection->attendance->breakTimes->create([
+                'break_start_at' => '',
+                'break_end_at' => '',
+            ]);
+            $attendanceCorrection->update(['status' => true]);
+        });
+
     }
 }

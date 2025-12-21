@@ -83,7 +83,6 @@
     width: 120px;
     padding: 4px 8px;
     background-color: #ffffff;
-    border: 1px solid #d9d9d9;
     border-radius: 4px;
     appearance: none;
     -webkit-appearance: none;
@@ -117,7 +116,12 @@
 .detail__message {
     align-self: flex-end;
     margin-top: 20px;
-    color: #ff5555;
+    margin-right: 40px;
+    padding: 5px 30px;
+    border-radius: 6px;
+    background-color: #696969;
+    font-size: 20px;
+    color: #fff;
 }
 
 /*時計アイコン非表示*/

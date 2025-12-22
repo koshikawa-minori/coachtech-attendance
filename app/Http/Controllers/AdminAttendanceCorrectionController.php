@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AttendanceCorrection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\AttendanceCorrection;
+use Carbon\Carbon;
 
 class AdminAttendanceCorrectionController extends Controller
 {
@@ -40,23 +42,60 @@ class AdminAttendanceCorrectionController extends Controller
     public function approve(AttendanceCorrection $attendanceCorrection)
     {
         if ($attendanceCorrection->status == true)
-        {
-            return back();
-        }
+                {
+                    return back();
+                }
 
-        DB::transaction(function ($attendanceCorrection) {
-            $attendanceCorrection->attendance->update([
-                'clock_in_at' => '',
-                'clock_out_at' => '',
-                'status' => '',
+        DB::transaction(function () use ($attendanceCorrection) {
+
+            // 同時押し対策
+            $updatedRows = AttendanceCorrection::where('id', $attendanceCorrection->id)->where('status', false)
+                ->update([
+                    'status' => true,
+                    'reviewed_admin_id' => Auth::id(),
+                    'reviewed_at' => now(),
+                ]);
+
+            if ($updatedRows === 0) {
+                return;
+            }
+
+            $attendance = $attendanceCorrection->attendance;
+
+            $attendance->update([
+                'clock_in_at' => $attendanceCorrection->requested_clock_in_at,
+                'clock_out_at' => $attendanceCorrection->requested_clock_out_at,
+                'notes' => $attendanceCorrection->requested_notes,
             ]);
-            $attendanceCorrection->attendance->breakTimes->delete();
-            $attendanceCorrection->attendance->breakTimes->create([
-                'break_start_at' => '',
-                'break_end_at' => '',
-            ]);
-            $attendanceCorrection->update(['status' => true]);
+
+            $attendance->breakTimes()->delete();
+
+            $workDate = $attendance->work_date;
+            $workDateTime = Carbon::parse($workDate)->format('Y-m-d');
+
+            foreach ($attendanceCorrection->requested_breaks as $breakDate)
+                {
+                    $breakStart = $breakDate['start'];
+                    $breakEnd = $breakDate['end'];
+
+                    if (empty($breakStart) || empty($breakEnd)) {
+                        continue;
+                    }
+
+                    $breakStartDatetime = $workDateTime . ' ' . $breakStart;
+                    $breakEndDatetime = $workDateTime . ' ' . $breakEnd;
+                    $breakStartDatetimeCarbon = Carbon::createFromFormat('Y-m-d H:i', $breakStartDatetime);
+                    $breakEndDateTimeCarbon = Carbon::createFromFormat('Y-m-d H:i', $breakEndDatetime);
+
+                    $attendance->breakTimes()->create([
+                        'break_start_at' => $breakStartDatetimeCarbon,
+                        'break_end_at' => $breakEndDateTimeCarbon,
+                    ]);
+                }
+
         });
+
+        return redirect()->route('admin.requests.show', ['attendanceCorrection' => $attendanceCorrection->id]);
 
     }
 }

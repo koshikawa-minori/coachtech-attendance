@@ -8,6 +8,7 @@
 
 .request-list {
     display: flex;
+    width: 700px;
     flex-direction: column;
     justify-content: space-between;
     gap: 28px;
@@ -24,8 +25,6 @@
 .detail__form {
     display: flex;
     flex-direction: column;
-    width: 650px;
-    font-weight: 700;
 }
 
 .detail__card {
@@ -35,10 +34,10 @@
 }
 
 .detail__group {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 120px 1fr 40px 1fr;
+    align-items: center;
     padding: 30px 40px;
-    gap: 30px;
     background-color: #fff;
     border-bottom: 4px solid #f0eff2;
 }
@@ -51,54 +50,65 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 120px;
+    font-size: 20px;
     color: #737373;
 }
 
 .detail__display {
     display: flex;
     align-items: center;
-    width: 320px;
-    padding-left: 40px;
+    width: 400px;
+    padding-left: 80px;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .detail__date {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 320px;
+    width: 400px;
     gap: 40px;
-    padding-left: 40px;
+    padding-left: 80px;
+    font-weight: 700;
+    font-size: 18px;
 }
 
 .detail__days {
     display: flex;
     justify-content: center;
     flex: 1;
-    padding-left: 50px;
+    padding-left: 80px;
+    font-weight: 700;
 }
 
 .detail__content {
     display: block;
-    width: 120px;
     padding: 4px 8px;
     background-color: #ffffff;
     border-radius: 4px;
     appearance: none;
     -webkit-appearance: none;
-    font-size: 14px;
+    font-weight: 700;
+    font-size: 18px;
     text-align: center;
 }
 
-.detail__textarea {
-    width: 320px;
-    text-align: left;
+.detail__group span {
+    margin-left: 0;
+    justify-self: center;
 }
 
-.detail__button {
+.detail__content--note {
+    width: 400px;
+    text-align: left;
+    padding-left: 80px;
+}
+
+.detail__button,
+.detail__message {
     align-self: flex-end;
     margin-top: 20px;
-    margin-right: 40px;
     padding: 5px 30px;
     border-radius: 6px;
     background-color: #000;
@@ -106,26 +116,30 @@
     color: #fff;
 }
 
-.detail__error {
-    flex-basis: 100%;
-    margin-top: 2px;
-    margin-left: 150px;
-    color: #ff5555;
-}
-
 .detail__message {
-    align-self: flex-end;
-    margin-top: 20px;
-    margin-right: 40px;
-    padding: 5px 30px;
-    border-radius: 6px;
     background-color: #696969;
-    font-size: 20px;
-    color: #fff;
 }
 
-/*時計アイコン非表示*/
-.detail__input::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    display: none;
+@media (min-width: 1400px) {
+
+    .request-list {
+        width: 900px;
+    }
+
+    .detail__title {
+        font-size: 22px;
+    }
+
+    .detail__display,
+    .detail__date,
+    .detail__content--note {
+        width: 500px;
+        padding-left: 120px;
+        font-size: 20px;
+    }
+
+    .detail__content {
+        font-size: 20px;
+    }
+
 }

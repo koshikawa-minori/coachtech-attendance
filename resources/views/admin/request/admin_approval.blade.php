@@ -14,7 +14,7 @@
             $isReadOnly = $attendanceCorrection->status == true;
             $secondBreak = $attendanceCorrection->requested_breaks[1] ?? null;
         @endphp
-        <form action="{{ route('admin.requests.approve', ['attendanceCorrection' => $attendanceCorrection->id]) }}" method="post">
+        <form class="detail__form" action="{{ route('admin.requests.approve', ['attendanceCorrection' => $attendanceCorrection->id]) }}" method="post">
             @csrf
             <div class="detail__card">
                 <div class="detail__group">
@@ -75,16 +75,16 @@
 
                 <div class="detail__group">
                     <div class="detail__title">備考</div>
-                    <div class="detail__content">
+                    <div class="detail__content detail__content--note">
                         {{ $attendanceCorrection->requested_notes }}
                     </div>
                 </div>
-                @if ($isReadOnly)
-                    <p class="detail__message">承認済み</p>
-                @else
-                    <button class="detail__button" type="submit">承認</button>
-                @endif
             </div>
+            @if ($isReadOnly)
+                <p class="detail__message">承認済み</p>
+            @else
+                <button class="detail__button" type="submit">承認</button>
+            @endif
         </form>
     </div>
 </div>

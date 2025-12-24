@@ -18,7 +18,18 @@ class SampleAttendanceSeeder extends Seeder
      */
     public function run(): void
     {
-        // ログインユーザー
+        // 管理者ユーザー
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => '管理者',
+                'password' => Hash::make('password'),
+                'is_admin' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // 一般ユーザー
         $mainUser = User::firstOrCreate(
             ['email' => 'test@example.com'],
             [
@@ -41,8 +52,9 @@ class SampleAttendanceSeeder extends Seeder
             ['name' => '中西 敬夫', 'email' => 'norio.n@coachtech.com'],
         ];
 
+        $staffs = [];
         foreach ($staffList as $staff) {
-            User::firstOrCreate(
+            $staffUser = User::firstOrCreate(
                 ['email' => $staff['email']],
                 [
                     'name' => $staff['name'],
@@ -51,18 +63,65 @@ class SampleAttendanceSeeder extends Seeder
                     'email_verified_at' => now(),
                 ]
             );
+            $staffs[] = $staffUser;
         }
 
-        // 管理者ユーザー
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@example.com'],
-            [
-                'name' => '管理者',
-                'password' => Hash::make('password'),
-                'is_admin' => true,
-                'email_verified_at' => now(),
-            ]
-        );
+        $month = Carbon::now()->startOfMonth();
+        $firstAttendanceIds = [];
+        foreach ($staffs as $staff) {
+            $weekdayCounter = 0;
+            $datePointer = $month->copy();
+
+            while ($weekdayCounter < 5) {
+                if ($datePointer->isWeekend()) {
+                    $datePointer->addDay();
+                    continue;
+                }
+
+                $clockInAt = $datePointer->copy()->setTime(9, 0);
+                $clockOutAt = $datePointer->copy()->setTime(18, 0);
+                $breakStartAt = $datePointer->copy()->setTime(12, 0);
+                $breakEndAt = $datePointer->copy()->setTime(13, 0);
+
+                $staffAttendance = Attendance::create([
+                    'user_id' => $staff->id,
+                    'work_date' => $datePointer->toDateString(),
+                    'clock_in_at' => $clockInAt,
+                    'clock_out_at' => $clockOutAt,
+                ]);
+
+                BreakTime::create([
+                    'attendance_id' => $staffAttendance->id,
+                    'break_start_at' => $breakStartAt,
+                    'break_end_at' => $breakEndAt,
+                ]);
+
+                if ($weekdayCounter === 0) {
+                    $firstAttendanceIds[$staff->id] = $staffAttendance->id;
+                }
+                $weekdayCounter++;
+                $datePointer->addDay();
+            }
+        }
+
+        $targetStaffs = array_slice($staffs, 0,2);
+        foreach ($targetStaffs as $targetStaff) {
+            $attendance = $firstAttendanceIds[$targetStaff->id];
+            AttendanceCorrection::create([
+                    'attendance_id' => $attendance,
+                    'requested_clock_in_at' => Carbon::parse('2025-12-01 10:00'),
+                    'requested_clock_out_at' => Carbon::parse('2025-12-01 19:00'),
+                    'requested_breaks' => [
+                        ['start' => '12:00', 'end' => '13:00'],
+                        ['start' => null, 'end' => null],
+                    ],
+                    'requested_notes' => '電車遅延のため',
+                    'status' => true,
+                    'reviewed_admin_id' => $admin->id,
+                    'reviewed_at' => now(),
+                ]);
+
+        }
 
         // 勤怠(前月・今月・翌月)データ作成
         $months = [
@@ -118,7 +177,7 @@ class SampleAttendanceSeeder extends Seeder
                         ['start' => '12:00', 'end' => '13:00'],
                         ['start' => null, 'end' => null],
                     ],
-                    'requested_notes' => '遅延のため',
+                    'requested_notes' => '電車遅延のため',
                     'status' => false,
                     'reviewed_admin_id' => null,
                     'reviewed_at' => null,

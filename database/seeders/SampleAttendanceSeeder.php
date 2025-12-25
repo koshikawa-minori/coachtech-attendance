@@ -29,20 +29,6 @@ class SampleAttendanceSeeder extends Seeder
             ]
         );
 
-        // 一般ユーザー
-        $mainUser = User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            [
-                'name' => '西 伶奈',
-                'password' => Hash::make('password'),
-                'is_admin' => false,
-
-            // 提出前に null に戻す！！
-            // 'email_verified_at' => null,
-                'email_verified_at' => now(), // ← 開発中は認証済みでOK
-            ],
-        );
-
         // スタッフリスト
         $staffList = [
             ['name' => '山田 太郎', 'email' => 'taro.y@coachtech.com'],
@@ -65,32 +51,36 @@ class SampleAttendanceSeeder extends Seeder
             );
             $staffs[] = $staffUser;
         }
-
-        $month = Carbon::now()->startOfMonth();
+        // 各スタッフに勤怠作成
+        $currentMonthStart = Carbon::now()->startOfMonth();
         $firstAttendanceIds = [];
         foreach ($staffs as $staff) {
             $weekdayCounter = 0;
-            $datePointer = $month->copy();
+            $workDatePointer = $currentMonthStart->copy();
 
             while ($weekdayCounter < 5) {
-                if ($datePointer->isWeekend()) {
-                    $datePointer->addDay();
+                if ($workDatePointer->isWeekend()) {
+                    $workDatePointer->addDay();
                     continue;
                 }
 
-                $clockInAt = $datePointer->copy()->setTime(9, 0);
-                $clockOutAt = $datePointer->copy()->setTime(18, 0);
-                $breakStartAt = $datePointer->copy()->setTime(12, 0);
-                $breakEndAt = $datePointer->copy()->setTime(13, 0);
+                $clockInAt = $workDatePointer->copy()->setTime(9, 0);
+                $clockOutAt = $workDatePointer->copy()->setTime(18, 0);
+                $breakStartAt = $workDatePointer->copy()->setTime(12, 0);
+                $breakEndAt = $workDatePointer->copy()->setTime(13, 0);
 
-                $staffAttendance = Attendance::create([
-                    'user_id' => $staff->id,
-                    'work_date' => $datePointer->toDateString(),
-                    'clock_in_at' => $clockInAt,
-                    'clock_out_at' => $clockOutAt,
-                ]);
+                $staffAttendance = Attendance::updateOrCreate(
+                    [
+                        'user_id' => $staff->id,
+                        'work_date' => $workDatePointer->toDateString(),
+                    ],
+                    [
+                        'clock_in_at' => $clockInAt,
+                        'clock_out_at' => $clockOutAt,
+                    ]
+                );
 
-                BreakTime::create([
+                BreakTime::firstOrCreate([
                     'attendance_id' => $staffAttendance->id,
                     'break_start_at' => $breakStartAt,
                     'break_end_at' => $breakEndAt,
@@ -99,29 +89,49 @@ class SampleAttendanceSeeder extends Seeder
                 if ($weekdayCounter === 0) {
                     $firstAttendanceIds[$staff->id] = $staffAttendance->id;
                 }
+
                 $weekdayCounter++;
-                $datePointer->addDay();
+                $workDatePointer->addDay();
             }
         }
 
-        $targetStaffs = array_slice($staffs, 0,2);
-        foreach ($targetStaffs as $targetStaff) {
-            $attendance = $firstAttendanceIds[$targetStaff->id];
+        // 各スタッフに承認済み1件ずつ作成
+        foreach ($staffs as $staff) {
+            $attendanceId = $firstAttendanceIds[$staff->id];
+            $attendanceModel = Attendance::findOrFail($attendanceId);
+            $workDate = $attendanceModel->work_date;
+            $requestedClockInCarbon = $workDate->copy()->setTime(10, 0);
+            $requestedClockOutCarbon = $workDate->copy()->setTime(19, 0);
+
             AttendanceCorrection::create([
-                    'attendance_id' => $attendance,
-                    'requested_clock_in_at' => Carbon::parse('2025-12-01 10:00'),
-                    'requested_clock_out_at' => Carbon::parse('2025-12-01 19:00'),
-                    'requested_breaks' => [
-                        ['start' => '12:00', 'end' => '13:00'],
-                        ['start' => null, 'end' => null],
-                    ],
-                    'requested_notes' => '電車遅延のため',
-                    'status' => true,
-                    'reviewed_admin_id' => $admin->id,
-                    'reviewed_at' => now(),
-                ]);
+                'attendance_id' => $attendanceId,
+                'requested_clock_in_at' => $requestedClockInCarbon,
+                'requested_clock_out_at' => $requestedClockOutCarbon,
+                'requested_breaks' => [
+                    ['start' => '12:00', 'end' => '13:00'],
+                    ['start' => null, 'end' => null],
+                ],
+                'requested_notes' => '電車遅延のため',
+                'status' => true,
+                'reviewed_admin_id' => $admin->id,
+                'reviewed_at' => now(),
+            ]);
 
         }
+
+        // 一般ユーザー
+        $mainUser = User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => '西 伶奈',
+                'password' => Hash::make('password'),
+                'is_admin' => false,
+
+            // 提出前に null に戻す！！
+            // 'email_verified_at' => null,
+                'email_verified_at' => now(), // ← 開発中は認証済みでOK
+            ],
+        );
 
         // 勤怠(前月・今月・翌月)データ作成
         $months = [
@@ -130,12 +140,11 @@ class SampleAttendanceSeeder extends Seeder
             Carbon::now()->addMonth()->startOfMonth(),
         ];
 
-        $createdAttendances = [];
+        $mainUserAttendanceIds = [];
 
         foreach ($months as $targetMonth) {
             $startOfMonth = $targetMonth->copy()->startOfMonth();
             $endOfMonth = $targetMonth->copy()->endOfMonth();
-
             $datePeriod = CarbonPeriod::create($startOfMonth, $endOfMonth);
 
             foreach ($datePeriod as $workDate) {
@@ -149,30 +158,59 @@ class SampleAttendanceSeeder extends Seeder
                 $breakStartAt = $workDate->copy()->setTime(12, 0);
                 $breakEndAt = $workDate->copy()->setTime(13, 0);
 
-                $attendance = Attendance::create([
-                    'user_id' => $mainUser->id,
-                    'work_date' => $workDate->toDateString(),
-                    'clock_in_at' => $clockInAt,
-                    'clock_out_at' => $clockOutAt,
-                ]);
+                $attendance = Attendance::updateOrCreate(
+                    [
+                        'user_id' => $mainUser->id,
+                        'work_date' => $workDate->toDateString(),
+                    ],
+                    [
+                        'clock_in_at' => $clockInAt,
+                        'clock_out_at' => $clockOutAt,
+                    ]
+                );
 
-                BreakTime::create([
+                BreakTime::firstOrCreate([
                     'attendance_id' => $attendance->id,
                     'break_start_at' => $breakStartAt,
                     'break_end_at' => $breakEndAt,
                 ]);
 
-                $createdAttendances[] = $attendance->id;
+                $mainUserAttendanceIds[] = $attendance->id;
             }
         }
 
-        $attendances = Attendance::whereIn('id', $createdAttendances)->inRandomOrder()->limit(10)->get();
+        // 承認済み作成
+        $approvedAttendanceIds = array_slice($mainUserAttendanceIds, 0, 2);
+        foreach ($approvedAttendanceIds as $mainUserAttendanceId) {
+            $mainUserAttendanceModel = Attendance::findOrFail($mainUserAttendanceId);
+            $workDate = $mainUserAttendanceModel->work_date;
+            $requestedClockInCarbon = $workDate->copy()->setTime(10, 0);
+            $requestedClockOutCarbon = $workDate->copy()->setTime(19, 0);
 
-        foreach ($attendances as $attendance) {
             AttendanceCorrection::create([
-                    'attendance_id' => $attendance->id,
-                    'requested_clock_in_at' => $attendance->clock_in_at,
-                    'requested_clock_out_at' => $attendance->clock_out_at,
+                'attendance_id' => $mainUserAttendanceId,
+                'requested_clock_in_at' => $requestedClockInCarbon,
+                'requested_clock_out_at' => $requestedClockOutCarbon,
+                'requested_breaks' => [
+                    ['start' => '12:00', 'end' => '13:00'],
+                    ['start' => null, 'end' => null],
+                ],
+                'requested_notes' => '電車遅延のため',
+                'status' => true,
+                'reviewed_admin_id' => $admin->id,
+                'reviewed_at' => now(),
+            ]);
+
+        }
+
+        // 承認待ち作成
+        $pendingAttendanceModels = Attendance::whereIn('id', $mainUserAttendanceIds)->whereNotIn('id', $approvedAttendanceIds)->inRandomOrder()->limit(10)->get();
+
+        foreach ($pendingAttendanceModels as $pendingAttendanceModel) {
+            AttendanceCorrection::create([
+                    'attendance_id' => $pendingAttendanceModel->id,
+                    'requested_clock_in_at' => $pendingAttendanceModel->clock_in_at,
+                    'requested_clock_out_at' => $pendingAttendanceModel->clock_out_at,
                     'requested_breaks' => [
                         ['start' => '12:00', 'end' => '13:00'],
                         ['start' => null, 'end' => null],
@@ -182,7 +220,7 @@ class SampleAttendanceSeeder extends Seeder
                     'reviewed_admin_id' => null,
                     'reviewed_at' => null,
                 ]);
-
         }
+
     }
 }

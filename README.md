@@ -79,9 +79,10 @@ cp .env.example .env  #環境変数を変更
 
 ```bash
 php artisan key:generate
-php artisan migrate
-php artisan db:seed
+php artisan migrate --seed
 ```
+- `php artisan migrate --seed` 実行時に、管理者・一般ユーザー・勤怠データ・申請データのダミーが作成されます。
+
 
 ## テストユーザー情報
 

@@ -73,6 +73,12 @@
                     <span>～</span>
                     <input class="detail__input" id="break_end_1" type="time" name="breaks[1][end]"
                         value="{{ old('breaks.1.end', $attendance->breakTimes->get(1)?->break_end_at?->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }}>
+                    @error('breaks.1.start')
+                        <p class="detail__error">{{ $message }}</p>
+                    @enderror
+                    @error('breaks.1.end')
+                        <p class="detail__error">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="detail__group">

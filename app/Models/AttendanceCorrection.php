@@ -17,6 +17,7 @@ class AttendanceCorrection extends Model
         'requested_clock_in_at' => 'datetime',
         'requested_clock_out_at' => 'datetime',
         'requested_breaks' => 'array',
+        'status' => 'boolean',
     ];
 
     protected $fillable = [

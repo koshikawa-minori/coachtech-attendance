@@ -38,7 +38,7 @@ class Attendance extends Model
 
     public function attendanceCorrection()
     {
-        return $this->hasOne(AttendanceCorrection::class);
+        return $this->hasOne(AttendanceCorrection::class, 'attendance_id');
     }
 
     // 勤務合計時間の計算

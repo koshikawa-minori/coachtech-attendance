@@ -182,12 +182,55 @@ class AttendanceController extends Controller
 
     public function detail(Attendance $attendance)
     {
-        $attendance->load('breakTimes');
+        $attendance->load(['breakTimes', 'attendanceCorrection']);
         $headerType = 'user';
+
+        $attendanceCorrection = $attendance->attendanceCorrection;
+
+        $isReadOnly = $attendanceCorrection && !$attendanceCorrection->status;
+
+        // 出勤退勤
+        if ($isReadOnly) {
+            $displayClockIn = optional($attendanceCorrection->requested_clock_in_at)->format('H:i') ?? '';
+            $displayClockOut = optional($attendanceCorrection->requested_clock_out_at)->format('H:i') ?? '';
+        } else {
+            $displayClockIn = optional($attendance->clock_in_at)->format('H:i') ?? '';
+            $displayClockOut = optional($attendance->clock_out_at)->format('H:i') ?? '';
+        }
+
+        // 休憩
+        if ($isReadOnly) {
+            $displayBreaks = collect($attendanceCorrection->requested_breaks ?? [])->map(function ($break) {
+                return[
+                    'start' => $break['start'] ?? '',
+                    'end' => $break['end'] ?? '',
+                ];
+            })->pad(2,['start' => '', 'end' => ''])->values()->toArray();
+
+        } else {
+            $displayBreaks = $attendance->breakTimes->map(function ($break) {
+                return [
+                    'start' => optional($break->break_start_at)->format('H:i') ?? '',
+                    'end' => optional($break->break_end_at)->format('H:i') ?? '',
+                ];
+            })->pad(2,['start' => '', 'end' => ''])->values()->toArray();
+        }
+
+        // 備考
+        if ($isReadOnly) {
+            $displayNote = $attendanceCorrection->requested_notes ?? '';
+        } else {
+            $displayNote = $attendance->notes ?? '';
+        }
 
         return view('attendance.attendance_detail', [
             'attendance' => $attendance,
             'headerType' => $headerType,
+            'isReadOnly' => $isReadOnly,
+            'displayClockIn' => $displayClockIn,
+            'displayClockOut' => $displayClockOut,
+            'displayBreaks' => $displayBreaks,
+            'displayNote' => $displayNote,
         ]);
     }
 

@@ -39,7 +39,7 @@ Route::post('/email/verification-notification', function (Request $request)
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 // 認証必須ページ
-Route::middleware(['auth'])->group(function()
+Route::middleware(['auth', 'verified'])->group(function()
 {
     //勤怠登録画面（一般ユーザー）
     Route::get('/attendance', [AttendanceController::class, 'show'])->name('attendance.show');

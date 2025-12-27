@@ -54,10 +54,10 @@
                 <div class="detail__group">
                     <label class="detail__label" for="break_start_0">休憩</label>
                     <input class="detail__input" id="break_start_0" type="time" name="breaks[0][start]"
-                        value="{{ old('breaks.0.start', $attendance->breakTimes->get(0)?->break_start_at?->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
+                        value="{{ old('breaks.0.start', $attendance->breakTimes->get(0)?->break_start_at?->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }}>
                     <span>～</span>
                     <input class="detail__input" id="break_end_0" type="time" name="breaks[0][end]"
-                        value="{{ old('breaks.0.end', $attendance->breakTimes->get(0)?->break_end_at?->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
+                        value="{{ old('breaks.0.end', $attendance->breakTimes->get(0)?->break_end_at?->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }}>
                     @error('breaks.0.start')
                         <p class="detail__error">{{ $message }}</p>
                     @enderror

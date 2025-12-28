@@ -92,7 +92,7 @@ class FortifyServiceProvider extends ServiceProvider
             {
                 $isAdminLogout = $request->input('logout_type') === 'admin';
 
-                if($isAdminLogout) {
+                if ($isAdminLogout) {
                     return redirect()->route('admin.login');
                 }
 
@@ -110,8 +110,8 @@ class FortifyServiceProvider extends ServiceProvider
             $isAdminLogin = ($request->login_type === 'admin');
             $user = User::where('email', $request->email)->first();
 
-            if($isAdminLogin) {
-                if($user && $user->is_admin && Hash::check($request->password, $user->password)) {
+            if ($isAdminLogin) {
+                if ($user && $user->is_admin && Hash::check($request->password, $user->password)) {
                     return $user;
                 }
 

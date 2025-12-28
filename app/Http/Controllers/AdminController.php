@@ -26,7 +26,10 @@ class AdminController extends Controller
         $nextDay = $targetDay->copy()->addDay()->format('Y-m-d');
 
         // 今日の勤怠取得
-        $attendances = Attendance::whereDate('work_date', $targetDay)->with('user')->orderBy('user_id')->get();
+        $attendances = Attendance::whereDate('work_date', $targetDay)
+            ->with('user')
+            ->orderBy('user_id')
+            ->get();
 
         return view('admin.attendance.admin_attendance_list', [
             'headerType' => 'admin',
@@ -46,15 +49,16 @@ class AdminController extends Controller
         ]);
 
         return view('admin.attendance.admin_attendance_detail', [
-        'headerType' => 'admin',
-        'attendance' => $attendance,
+            'headerType' => 'admin',
+            'attendance' => $attendance,
         ]);
     }
 
     public function update(AttendanceTimeRequest $request, Attendance $attendance)
     {
-        if ($attendance->attendanceCorrection && $attendance->attendanceCorrection->status == false)
-        {
+        $attendanceCorrection = $attendance->attendanceCorrection;
+
+        if ($attendanceCorrection && !$attendanceCorrection->status) {
             return back()->with('error', '*承認待ちのため修正はできません。');
         }
 
@@ -71,35 +75,34 @@ class AdminController extends Controller
         $clockInCarbon = Carbon::createFromFormat('Y-m-d H:i', $clockInDateTime);
         $clockOutCarbon = Carbon::createFromFormat('Y-m-d H:i', $clockOutDateTime);
 
-        $notes = $validated['note'];
+        $note = $validated['note'];
 
         $attendance->update([
             'clock_in_at' => $clockInCarbon,
             'clock_out_at' => $clockOutCarbon,
-            'notes' => $notes,
+            'notes' => $note,
         ]);
 
         $attendance->breakTimes()->delete();
-        foreach ($validated['breaks'] as $breakDate)
-            {
-                $breakStart = $breakDate['start'];
-                $breakEnd = $breakDate['end'];
+        foreach ($validated['breaks'] as $breakDate) {
+            $breakStart = $breakDate['start'];
+            $breakEnd = $breakDate['end'];
 
-                if (empty($breakStart) || empty($breakEnd)) {
+            if (empty($breakStart) || empty($breakEnd)) {
                 continue;
-                }
-
-                $breakStartDateTime = $workDateTime . ' ' . $breakStart;
-                $breakEndDateTime = $workDateTime . ' ' . $breakEnd;
-                $breakStartDateTimeCarbon = Carbon::createFromFormat('Y-m-d H:i', $breakStartDateTime);
-                $breakEndDateTimeCarbon = Carbon::createFromFormat('Y-m-d H:i', $breakEndDateTime);
-
-                BreakTime::create([
-                    'attendance_id' => $attendance->id,
-                    'break_start_at' => $breakStartDateTimeCarbon,
-                    'break_end_at' => $breakEndDateTimeCarbon,
-                ]);
             }
+
+            $breakStartDateTime = $workDateTime . ' ' . $breakStart;
+            $breakEndDateTime = $workDateTime . ' ' . $breakEnd;
+            $breakStartDateTimeCarbon = Carbon::createFromFormat('Y-m-d H:i', $breakStartDateTime);
+            $breakEndDateTimeCarbon = Carbon::createFromFormat('Y-m-d H:i', $breakEndDateTime);
+
+            BreakTime::create([
+                'attendance_id' => $attendance->id,
+                'break_start_at' => $breakStartDateTimeCarbon,
+                'break_end_at' => $breakEndDateTimeCarbon,
+            ]);
+        }
 
         return redirect()->route('admin.attendance.detail', $attendance->id);
     }

@@ -39,7 +39,7 @@ Route::post('/email/verification-notification', function (Request $request)
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 // 認証必須ページ
-Route::middleware(['auth', 'verified'])->group(function()
+Route::middleware(['auth', 'verified'])->group(function ()
 {
     //勤怠登録画面（一般ユーザー）
     Route::get('/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
@@ -68,7 +68,7 @@ Route::get('/admin/login', function () {
     ]);
 })->name('admin.login');
 
-Route::middleware(['auth', 'admin'])->group(function() {
+Route::middleware(['auth', 'admin'])->group(function () {
     // 勤怠一覧画面（管理者）
     Route::get('/admin/attendance/list', [AdminController::class, 'index'])->name('admin.attendance.index');
 

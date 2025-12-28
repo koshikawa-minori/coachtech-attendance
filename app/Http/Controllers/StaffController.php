@@ -22,27 +22,19 @@ class StaffController extends Controller
     public function attendance(Request $request, $staffId)
     {
         $staffUser = User::findOrFail($staffId);
-
-        // 表示したい月判定
-        $requestedMonth = $request->query('month');
-
-        if ($requestedMonth) {
-            $targetMonth  = Carbon::createFromFormat('Y-m', $requestedMonth)->startOfMonth();
-        } else {
-            $targetMonth  = Carbon::now()->startOfMonth();
-        }
+        $targetMonth = $this->getTargetMonth($request);
 
         // 月初と月末をCarbonで作る
-        $startOfMonth = $targetMonth ->copy()->startOfMonth();
-        $endOfMonth = $targetMonth ->copy()->endOfMonth();
+        $startOfMonth = $targetMonth->copy()->startOfMonth();
+        $endOfMonth = $targetMonth->copy()->endOfMonth();
 
         // 今月の勤怠取得 work_dateをキーにする
         $attendancesByDate = Attendance::where('user_id', $staffId)
-        ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
-        ->get()
-        ->keyBy(function (Attendance $attendance) {
-            return $attendance->work_date->format('Y-m-d');
-        });
+            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+            ->get()
+            ->keyBy(function (Attendance $attendance) {
+                return $attendance->work_date->format('Y-m-d');
+            });
 
         // 表示中の月を基準に、前月・翌月の切り替え用クエリを作成
         $previousMonth = $targetMonth->copy()->subMonth()->format('Y-m');
@@ -82,34 +74,25 @@ class StaffController extends Controller
     {
         $filename = 'attendance_' . now()->format('Ymd_His') . '.csv';
 
-        $requestedMonth = $request->query('month');
+        $targetMonth = $this->getTargetMonth($request);
+        $startOfMonth = $targetMonth->copy()->startOfMonth();
+        $endOfMonth = $targetMonth->copy()->endOfMonth();
 
-        if ($requestedMonth) {
-            $targetMonth = Carbon::createFromFormat('Y-m', $requestedMonth)->startOfMonth();
-        } else {
-            $targetMonth = Carbon::now()->startOfMonth();
-        }
-
-        $startOfMonth = $targetMonth ->copy()->startOfMonth();
-        $endOfMonth = $targetMonth ->copy()->endOfMonth();
-
-        return response()->streamDownload(function () use ($staffId, $startOfMonth, $endOfMonth)
-        {
+        return response()->streamDownload(function () use ($staffId, $startOfMonth, $endOfMonth) {
 
             $stream = fopen('php://output', 'w');
 
             fputcsv($stream, ['日付', '出勤', '退勤', '休憩', '合計']);
 
             $attendancesByDate = Attendance::where('user_id', $staffId)
-            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
-            ->get()
-            ->keyBy(function (Attendance $attendance) {
-                return $attendance->work_date->format('Y-m-d');
-            });
+                ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+                ->get()
+                ->keyBy(function (Attendance $attendance) {
+                    return $attendance->work_date->format('Y-m-d');
+                });
 
             $datePointer = $startOfMonth->copy();
-            while ($datePointer->lte($endOfMonth))
-            {
+            while ($datePointer->lte($endOfMonth)) {
                 $dateKey = $datePointer->format('Y-m-d');
                 $attendanceForDate = $attendancesByDate->get($dateKey);
 
@@ -130,5 +113,17 @@ class StaffController extends Controller
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    private function getTargetMonth(Request $request): Carbon
+    {
+        // 表示したい月判定
+        $requestedMonth = $request->query('month');
+
+        if ($requestedMonth) {
+            return Carbon::createFromFormat('Y-m', $requestedMonth)->startOfMonth();
+        }
+
+        return Carbon::now()->startOfMonth();
     }
 }

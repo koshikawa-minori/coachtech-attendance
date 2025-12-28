@@ -17,20 +17,25 @@ class AttendanceController extends Controller
         $headerType = 'user';
 
         // 現在日時の取得
-        $today = today()->format('Y年n月j日');
+        $todayDate = today();
+        $today = $todayDate->format('Y年n月j日');
         $currentTime = now()->format('H:i');
         $weekday = Carbon::now()->isoFormat('ddd');
 
         // ログインユーザーの今日の勤怠取得
         $userId = Auth::id();
-        $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
+        $todayAttendance = Attendance::where('user_id', $userId)
+            ->whereDate('work_date', $todayDate)
+            ->first();
 
         if (is_null($todayAttendance)) {
             $status = 'before_work';
 
         } elseif (is_null($todayAttendance->clock_out_at)) {
             $todayBreak = $todayAttendance->breakTimes();
-            $breakTime = $todayBreak->whereNull('break_end_at')->orderByDesc('break_start_at')->first();
+            $breakTime = $todayBreak->whereNull('break_end_at')
+                ->orderByDesc('break_start_at')
+                ->first();
 
             if ($breakTime) {
                 $status = 'on_break';
@@ -58,28 +63,34 @@ class AttendanceController extends Controller
 
         switch ($actionType) {
             case 'clock_in':
-                $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->exists();
+                $attendanceExists = Attendance::where('user_id', $userId)
+                    ->whereDate('work_date', $today)
+                    ->exists();
 
-                if(!$todayAttendance) {
-                    $todayAttendance = Attendance::create([
+                if (!$attendanceExists) {
+                    Attendance::create([
                         'user_id' => $userId,
                         'work_date' => $today,
                         'clock_in_at' => $currentTime,
                     ]);
                 }
+
                 return redirect()->route('attendance.show');
-                break;
 
             case 'break_start':
-                $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
+                $todayAttendance = Attendance::where('user_id', $userId)
+                    ->whereDate('work_date', $today)
+                    ->first();
 
                 $todayBreak = $todayAttendance->breakTimes();
-                $breakTime = $todayBreak->whereNull('break_end_at')->orderByDesc('break_start_at')->first();
+                $breakTime = $todayBreak->whereNull('break_end_at')
+                    ->orderByDesc('break_start_at')
+                    ->first();
 
                 $attendanceId = $todayAttendance->id;
                 $breakStart = now();
 
-                if(!$breakTime) {
+                if (!$breakTime) {
                     BreakTime::create([
                         'attendance_id' => $attendanceId,
                         'break_start_at' => $breakStart,
@@ -87,38 +98,40 @@ class AttendanceController extends Controller
                 }
 
                 return redirect()->route('attendance.show');
-                break;
 
             case 'break_end':
-                $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
+                $todayAttendance = Attendance::where('user_id', $userId)
+                    ->whereDate('work_date', $today)
+                    ->first();
 
                 $todayBreak = $todayAttendance->breakTimes();
-                $breakTime = $todayBreak->whereNull('break_end_at')->orderByDesc('break_start_at')->first();
+                $breakTime = $todayBreak->whereNull('break_end_at')
+                    ->orderByDesc('break_start_at')
+                    ->first();
 
-                if($breakTime) {
+                if ($breakTime) {
                     $breakTime->update([
                         'break_end_at' => now(),
                     ]);
                 }
 
                 return redirect()->route('attendance.show');
-                break;
 
             case 'clock_out':
-                $todayAttendance = Attendance::where('user_id', $userId)->whereDate('work_date', today())->first();
+                $todayAttendance = Attendance::where('user_id', $userId)
+                    ->whereDate('work_date', $today)
+                    ->first();
 
-                if($todayAttendance) {
+                if ($todayAttendance) {
                     $todayAttendance->update([
                         'clock_out_at' => now(),
                     ]);
                 }
 
                 return redirect()->route('attendance.show');
-                break;
         }
 
         return redirect()->route('attendance.show');
-
     }
 
     public function index(Request $request)
@@ -136,16 +149,16 @@ class AttendanceController extends Controller
         }
 
         // 月初と月末をCarbonで作る
-        $startOfMonth = $targetMonth ->copy()->startOfMonth();
-        $endOfMonth = $targetMonth ->copy()->endOfMonth();
+        $startOfMonth = $targetMonth->copy()->startOfMonth();
+        $endOfMonth = $targetMonth->copy()->endOfMonth();
 
         // 今月の勤怠取得 work_dateをキーにする
         $attendancesByDate = Attendance::where('user_id', $userId)
-        ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
-        ->get()
-        ->keyBy(function (Attendance $attendance) {
-            return $attendance->work_date->format('Y-m-d');
-        });
+            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+            ->get()
+            ->keyBy(function (Attendance $attendance) {
+                return $attendance->work_date->format('Y-m-d');
+            });
 
         // 前月と翌月リンクの処理
         $previousMonth = $targetMonth->copy()->subMonth()->format('Y-m');
@@ -201,11 +214,11 @@ class AttendanceController extends Controller
         // 休憩
         if ($isReadOnly) {
             $displayBreaks = collect($attendanceCorrection->requested_breaks ?? [])->map(function ($break) {
-                return[
+                return [
                     'start' => $break['start'] ?? '',
                     'end' => $break['end'] ?? '',
                 ];
-            })->pad(2,['start' => '', 'end' => ''])->values()->toArray();
+            })->pad(2, ['start' => '', 'end' => ''])->values()->toArray();
 
         } else {
             $displayBreaks = $attendance->breakTimes->map(function ($break) {
@@ -213,7 +226,7 @@ class AttendanceController extends Controller
                     'start' => optional($break->break_start_at)->format('H:i') ?? '',
                     'end' => optional($break->break_end_at)->format('H:i') ?? '',
                 ];
-            })->pad(2,['start' => '', 'end' => ''])->values()->toArray();
+            })->pad(2, ['start' => '', 'end' => ''])->values()->toArray();
         }
 
         // 備考
@@ -236,8 +249,9 @@ class AttendanceController extends Controller
 
     public function detailRequest(AttendanceTimeRequest $request, Attendance $attendance)
     {
-        if ($attendance->attendanceCorrection && $attendance->attendanceCorrection->status == false)
-            {
+        $attendanceCorrection = $attendance->attendanceCorrection;
+
+        if ($attendanceCorrection && !$attendanceCorrection->status) {
             return back()->with('error', '*承認待ちのため修正はできません。');
         }
 

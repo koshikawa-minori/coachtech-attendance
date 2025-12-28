@@ -15,9 +15,9 @@ class AttendanceCorrectionController extends Controller
 
         // ログインユーザーの申請だけに絞る
         $attendanceCorrectionQuery = AttendanceCorrection::with(['attendance.user'])
-        ->whereHas('attendance', function($queryBuilder) use ($userId) {
-            $queryBuilder->where('user_id', $userId);
-        });
+            ->whereHas('attendance', function ($queryBuilder) use ($userId) {
+                $queryBuilder->where('user_id', $userId);
+            });
 
         $page = $request->query('page', 'wait');
 

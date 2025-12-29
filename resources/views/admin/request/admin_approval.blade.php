@@ -11,7 +11,8 @@
         <h1 class="request-list__title">勤怠詳細</h1>
 
         @php
-            $isReadOnly = $attendanceCorrection->status == true;
+            $isReadOnly = (bool) $attendanceCorrection->status;
+            $firstBreak = $attendanceCorrection->requested_breaks[0] ?? null;
             $secondBreak = $attendanceCorrection->requested_breaks[1] ?? null;
         @endphp
         <form class="detail__form" action="{{ route('admin.requests.approve', ['attendanceCorrection' => $attendanceCorrection->id]) }}" method="post">
@@ -40,23 +41,25 @@
                 <div class="detail__group">
                     <div class="detail__title">出勤・退勤</div>
                     <div class="detail__content">
-                        {{ $attendanceCorrection->requested_clock_in_at->format('H:i') }}
+                        {{ $attendanceCorrection->requested_clock_in_at?->format('H:i') ?? '' }}
                     </div>
                     <span>～</span>
                     <div class="detail__content">
-                        {{ $attendanceCorrection->requested_clock_out_at->format('H:i') }}
+                        {{ $attendanceCorrection->requested_clock_out_at?->format('H:i') ?? '' }}
                     </div>
                 </div>
 
                 <div class="detail__group">
                     <div class="detail__title">休憩</div>
-                    <div class="detail__content">
-                        {{ $attendanceCorrection->requested_breaks[0]['start'] ?? '' }}
-                    </div>
-                    <span>～</span>
-                    <div class="detail__content">
-                        {{ $attendanceCorrection->requested_breaks[0]['end'] ?? '' }}
-                    </div>
+                    @if (!empty($firstBreak['start']) || !empty($firstBreak['end']))
+                        <div class="detail__content">
+                            {{ $firstBreak['start'] ?? '' }}
+                        </div>
+                        <span>～</span>
+                        <div class="detail__content">
+                            {{ $firstBreak['end'] ?? '' }}
+                        </div>
+                    @endif
                 </div>
 
                 <div class="detail__group">

@@ -107,7 +107,7 @@ class FortifyServiceProvider extends ServiceProvider
 
         // ログイン認証
         Fortify::authenticateUsing(function (Request $request) {
-            $isAdminLogin = ($request->login_type === 'admin');
+            $isAdminLogin = ($request->input('login_type') === 'admin');
             $user = User::where('email', $request->email)->first();
 
             if ($isAdminLogin) {

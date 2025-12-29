@@ -74,7 +74,7 @@
     gap: 40px;
     padding-left: 80px;
     font-weight: 700;
-    font-size: 18px;;
+    font-size: 18px;
 }
 
 .detail__days {
@@ -118,6 +118,8 @@
     background-color: #000;
     font-size: 20px;
     color: #fff;
+    border: none;
+    cursor: pointer;
 }
 
 .detail__error {

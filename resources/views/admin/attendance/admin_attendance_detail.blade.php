@@ -17,14 +17,14 @@
             @csrf
             <div class="detail__card">
                 <div class="detail__group">
-                    <label class="detail__label">名前</label>
+                    <div class="detail__label">名前</div>
                     <div class="detail__display">
                         {{ $attendance->user?->name }}
                     </div>
                 </div>
 
                 <div class="detail__group">
-                    <label class="detail__label">日付</label>
+                    <div class="detail__label">日付</div>
                     <div class="detail__date">
                         <div class="detail__year">
                             {{ $attendance->work_date?->format('Y年') }}
@@ -39,10 +39,10 @@
                 <div class="detail__group">
                     <label class="detail__label" for="clock_in_at">出勤・退勤</label>
                     <input class="detail__input" id="clock_in_at" type="time" name="clock_in_at"
-                    value="{{ old('clock_in_at', $attendance->clock_in_at?->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
+                        value="{{ old('clock_in_at', $attendance->clock_in_at?->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
                     <span>～</span>
                     <input class="detail__input" id="clock_out_at" type="time" name="clock_out_at"
-                    value="{{ old('clock_out_at', $attendance->clock_out_at?->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
+                        value="{{ old('clock_out_at', $attendance->clock_out_at?->format('H:i')) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
                     @error('clock_in_at')
                         <p class="detail__error">{{ $message }}</p>
                     @enderror

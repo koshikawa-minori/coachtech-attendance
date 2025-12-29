@@ -11,7 +11,7 @@
         <h1 class="attendance-list__title">勤怠一覧</h1>
         <div class="attendance-list__header">
             <a class="previous-month" href="{{ route('attendance.index', ['month'=> $previousMonth]) }}">
-                <p class="arrow">←</p>
+                <span class="arrow">←</span>
                 <span>前月</span>
             </a>
             <div class="this-month">
@@ -20,7 +20,7 @@
             </div>
             <a class="next-month" href="{{ route('attendance.index', ['month'=> $nextMonth]) }}">
                 <span>翌月</span>
-                <p class="arrow">→</p>
+                <span class="arrow">→</span>
             </a>
         </div>
 
@@ -30,8 +30,8 @@
                     <th class="table-days">日付</th>
                     <th class="table-clock-in">出勤</th>
                     <th class="table-clock-out">退勤</th>
-                    <th class="table-break">休憩</th>
-                    <th class="table-total">合計</th>
+                    <th class="table-break-total">休憩</th>
+                    <th class="table-attendance-total">合計</th>
                     <th class="table-detail">詳細</th>
                 </tr>
             </thead>

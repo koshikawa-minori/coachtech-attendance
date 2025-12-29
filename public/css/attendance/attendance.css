@@ -45,6 +45,8 @@
     border-radius: 16px;
     font-size: 32px;
     font-weight: 700;
+    border: none;
+    cursor: pointer;
 }
 
 .attendance__button--inOut {

@@ -48,8 +48,8 @@
 
     </form>
 
-    <p class="register__link">
-    <a href="{{ route('login') }}">ログインはこちら</a>
-    </p>
+    <div class="register__link">
+        <a href="{{ route('login') }}">ログインはこちら</a>
+    </div>
 </div>
 @endsection

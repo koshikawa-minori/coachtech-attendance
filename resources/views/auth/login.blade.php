@@ -28,11 +28,12 @@
             @enderror
         </div>
 
+        <input type="hidden" name="login_type" value="user">
         <button class="login__button" type="submit">ログインする</button>
     </form>
 
-    <p class="login__link">
+    <div class="login__link">
         <a href="{{ route('register') }}">会員登録はこちら</a>
-    </p>
+    </div>
 </div>
 @endsection

@@ -14,14 +14,14 @@
             @csrf
             <div class="detail__card">
                 <div class="detail__group">
-                    <label class="detail__label">名前</label>
+                    <div class="detail__label">名前</div>
                     <div class="detail__display">
                         {{ $attendance->user?->name }}
                     </div>
                 </div>
 
                 <div class="detail__group">
-                    <label class="detail__label">日付</label>
+                    <div class="detail__label">日付</div>
                     <div class="detail__date">
                         <div class="detail__year">
                             {{ $attendance->work_date?->format('Y年') ?? '' }}

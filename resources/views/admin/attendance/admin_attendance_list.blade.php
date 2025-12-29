@@ -11,7 +11,7 @@
         <h1 class="attendance-list__title">{{ $targetDay->format('Y年n月j日') }}の勤怠</h1>
         <div class="attendance-list__header">
             <a class="previous-day" href="{{ route('admin.attendance.index', ['date'=> $previousDay]) }}">
-                <p class="arrow">←</p>
+                <span class="arrow">←</span>
                 <span>前日</span>
             </a>
             <div class="this-day">
@@ -20,7 +20,7 @@
             </div>
             <a class="next-day" href="{{ route('admin.attendance.index', ['date'=> $nextDay]) }}">
                 <span>翌日</span>
-                <p class="arrow">→</p>
+                <span class="arrow">→</span>
             </a>
         </div>
 
@@ -30,8 +30,8 @@
                     <th class="table-name">名前</th>
                     <th class="table-clock-in">出勤</th>
                     <th class="table-clock-out">退勤</th>
-                    <th class="table-break">休憩</th>
-                    <th class="table-total">合計</th>
+                    <th class="table-break-total">休憩</th>
+                    <th class="table-attendance-total">合計</th>
                     <th class="table-detail">詳細</th>
                 </tr>
             </thead>
@@ -41,23 +41,19 @@
                     <tr>
                         <td class="table-name">{{ $attendance->user->name }}</td>
                         <td class="table-clock-in">
-                            {{ ($attendance->clock_in_at)
-                                ? $attendance->clock_in_at->format('H:i') : '' }}
+                            {{ $attendance->clock_in_at?->format('H:i') ?? '' }}
                         </td>
 
                         <td class="table-clock-out">
-                            {{ ($attendance->clock_out_at)
-                                ? $attendance->clock_out_at->format('H:i') : '' }}
+                            {{ $attendance->clock_out_at?->format('H:i') ?? '' }}
                         </td>
 
-                        <td class="table-break">
-                            {{ ($attendance->the_total_break)
-                                ? $attendance->the_total_break : '' }}
+                        <td class="table-break-total">
+                            {{ $attendance->the_total_break ?? '' }}
                         </td>
 
-                        <td class="table-total">
-                            {{ ($attendance->the_total_work)
-                                ? $attendance->the_total_work : '' }}
+                        <td class="table-attendance-total">
+                            {{ $attendance->the_total_work ?? '' }}
                         </td>
 
                         <td class="table-detail">

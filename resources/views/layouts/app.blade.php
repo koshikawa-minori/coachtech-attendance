@@ -18,7 +18,7 @@
     <header class="header">
         <div class="header__inner">
             <div class="header__left">
-                    <img src="{{ asset('images/logo.svg')}}" alt="COACHTECHロゴ">
+                <img src="{{ asset('images/logo.svg')}}" alt="COACHTECHロゴ">
             </div>
             @if ($headerType === 'auth')
                 {{-- 右側は何も出さない --}}

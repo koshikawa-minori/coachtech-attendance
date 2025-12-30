@@ -2,7 +2,7 @@
 @section('title', '管理者申請一覧')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin/request/admin_request_list.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/request/admin_request_list.css') }}">
 @endpush
 
 @section('content')

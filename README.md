@@ -73,7 +73,7 @@ docker-compose exec php bash
 composer install
 cp .env.example .env  #環境変数を変更
 ```
-- DB 接続情報（docker-compose.yml の設定と一致させる）
+- DB 接続情報（docker-compose.yml の設定と一致させてください。）
 
 - キャッシュ設定（`.env` の CACHE_DRIVER を `file` に変更してください。）
 
@@ -104,18 +104,21 @@ php artisan migrate --seed
 ### メール認証手順
 
 1. `.env` に Mailtrap の `MAIL_USERNAME` / `MAIL_PASSWORD` を設定
-2. `/register`（会員登録画面）で新規登録を行う
+2. `/register`（会員登録画面）で新規登録を行います。
 3. 登録直後に認証メールを送信し、 `/register/verify`（メール認証誘導画面）へ遷移
 4. 「認証はこちらから」ボタン押下で`/email/verify`（メール認証画面）へ遷移
 5. 認証メール内のリンクをクリックすると、
-  新しいタブで `/email/verify/{id}/{hash}` にアクセスし認証完了、その後プロフィール設定画面が開く
+  新しいタブで `/email/verify/{id}/{hash}` にアクセスし認証完了後、勤怠登録画面へ遷移します。
 
-- 認証が未完了のままログインした場合も認証誘導画面へ遷移
-- 認証メールの再送機能あり（1分間に6回まで）
+- 認証が未完了のままログインした場合も認証誘導画面へ遷移します。
+- 認証メールの再送機能があります。（1分間に6回まで）
 
 ## テストコード
 
-**PHPUnit**を用いたテストケースを作成しています。
+※ 本アプリでは PHPUnit の実行環境のみ整備しています。
+テストコードは今後実装予定です。
+
+<!-- **PHPUnit**を用いたテストケースを作成しています。
 
 ### 1.テスト用データベース作成
 ```bash
@@ -166,3 +169,4 @@ php artisan test
 ```bash
 ./vendor/bin/phpunit
 ```
+-->

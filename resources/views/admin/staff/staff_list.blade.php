@@ -2,7 +2,7 @@
 @section('title', 'スタッフ一覧')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin/staff/staff_list.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/staff/staff_list.css') }}">
 @endpush
 
 @section('content')

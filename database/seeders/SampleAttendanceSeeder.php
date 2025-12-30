@@ -148,10 +148,7 @@ class SampleAttendanceSeeder extends Seeder
                 'name' => '西 伶奈',
                 'password' => Hash::make('password'),
                 'is_admin' => false,
-
-            // 提出前に null に戻す！！
-            // 'email_verified_at' => null,
-                'email_verified_at' => now(), // ← 開発中は認証済みでOK
+                'email_verified_at' => null,
             ],
         );
 

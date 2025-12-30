@@ -2,7 +2,7 @@
 @section('title', '勤怠詳細')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/attendance/attendance_detail.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/attendance/attendance_detail.css') }}">
 @endpush
 
 @section('content')
@@ -36,10 +36,10 @@
                 <div class="detail__group">
                     <label class="detail__label" for="clock_in_at">出勤・退勤</label>
                     <input class="detail__input" id="clock_in_at" type="time" name="clock_in_at"
-                    value="{{ old('clock_in_at', $displayClockIn) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
+                        value="{{ old('clock_in_at', $displayClockIn) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
                     <span>～</span>
                     <input class="detail__input" id="clock_out_at" type="time" name="clock_out_at"
-                    value="{{ old('clock_out_at', $displayClockOut) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
+                        value="{{ old('clock_out_at', $displayClockOut) }}" {{ $isReadOnly ? 'disabled' : '' }} required>
                     @error('clock_in_at')
                         <p class="detail__error">{{ $message }}</p>
                     @enderror

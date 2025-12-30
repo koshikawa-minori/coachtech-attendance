@@ -2,7 +2,7 @@
 @section('title', 'スタッフ別勤怠一覧')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin/staff/staff_attendance.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/staff/staff_attendance.css') }}">
 @endpush
 
 @section('content')

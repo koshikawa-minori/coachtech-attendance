@@ -12,7 +12,6 @@
 
     <form class="login__form" method="POST" action="{{ route('login') }}" novalidate>
         @csrf
-
         <input type="hidden" name="login_type" value="admin">
 
         <div class="login__group">

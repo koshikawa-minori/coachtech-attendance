@@ -121,7 +121,7 @@ class StaffController extends Controller
         $requestedMonth = $request->query('month');
 
         if ($requestedMonth) {
-            return Carbon::createFromFormat('Y-m', $requestedMonth)->startOfMonth();
+            return Carbon::createFromFormat('Y-m-d', $requestedMonth . '-01')->startOfMonth();
         }
 
         return Carbon::now()->startOfMonth();

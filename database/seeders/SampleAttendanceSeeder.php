@@ -148,15 +148,16 @@ class SampleAttendanceSeeder extends Seeder
                 'name' => '西 伶奈',
                 'password' => Hash::make('password'),
                 'is_admin' => false,
-                'email_verified_at' => null,
+                'email_verified_at' => now(),
             ],
         );
 
         // 勤怠(前月・今月・翌月)データ作成
+        $baseMonth = Carbon::now()->startOfMonth();
         $months = [
-            Carbon::now()->subMonth()->startOfMonth(),
-            Carbon::now()->startOfMonth(),
-            Carbon::now()->addMonth()->startOfMonth(),
+            $baseMonth->copy()->subMonth()->startOfMonth(),
+            $baseMonth->copy()->startOfMonth(),
+            $baseMonth->copy()->addMonth()->startOfMonth(),
         ];
 
         $mainUserAttendanceIds = [];
@@ -167,6 +168,8 @@ class SampleAttendanceSeeder extends Seeder
             $firstWeekdayOfCurrentMonth->addDay();
         }
 
+        $today = Carbon::today();
+
         foreach ($months as $targetMonth) {
             $startOfMonth = $targetMonth->copy()->startOfMonth();
             $endOfMonth = $targetMonth->copy()->endOfMonth();
@@ -176,6 +179,11 @@ class SampleAttendanceSeeder extends Seeder
                 if ($workDate->isWeekend()) {
                     continue;
                 }
+
+                if ($targetMonth->isSameMonth($today) && $workDate->greaterThanOrEqualTo($today)) {
+                    continue;
+                }
+
 
                 $clockIn = $workDate->copy()->setTime(9, 0);
                 $clockOut = $workDate->copy()->setTime(18, 0);

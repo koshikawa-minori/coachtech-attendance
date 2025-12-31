@@ -51,7 +51,7 @@
 - Laravel 12.x
 - PHP 8.2+
 - MySQL 8.0
-- nginx 1.21
+- nginx 1.25
 
 ## 開発環境URL
 - 一般ユーザーログイン: http://localhost/login
@@ -78,6 +78,10 @@ cp .env.example .env  #環境変数を変更
 - キャッシュ設定（`.env` の CACHE_DRIVER を `file` に変更してください。）
 
 ```bash
+# Laravel が storage / cache に書き込めない場合があるため、権限を調整
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+
 php artisan key:generate
 php artisan migrate --seed
 ```
@@ -92,8 +96,7 @@ php artisan migrate --seed
 | 管理ユーザー | admin@example.com | password |
 
 ※本アプリではメール認証を実装しています。
-一般ユーザー（test@example.com）は未認証のため、
-ログイン前にメール認証を完了させてください。
+※上記テストユーザーは、動作確認用としてメール認証済みの状態で作成されています。
 
 
 ## メール認証機能

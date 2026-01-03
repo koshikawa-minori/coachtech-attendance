@@ -28,7 +28,7 @@
 - `/login`：ログイン
 - `/attendance`：勤怠登録（出勤・休憩・退勤）
 - `/attendance/list`：勤怠一覧（月次）
-- `/attendance/detail/{id}`：勤怠詳細・修正申請
+- `/attendance/detail/{attendance}`：勤怠詳細・修正申請
 - `/requests`：申請一覧（承認待ち・承認済み）
 
 ### メール認証
@@ -38,11 +38,12 @@
 ### 管理者
 - `/admin/login`：管理者ログイン
 - `/admin/attendance/list`：勤怠一覧（日次）
-- `/admin/attendance/detail/{id}`：勤怠詳細・修正
+- `/admin/attendance/detail/{attendance}`：勤怠詳細・修正
 - `/admin/staff/list`：スタッフ一覧
-- `/admin/attendance/staff/{id}`：スタッフ別勤怠一覧
+- `/admin/staff/{staffId}/attendance`：スタッフ別勤怠一覧
+- `/admin/staff/{staffId}/attendance/export`：スタッフ別勤怠一覧CSV出力
 - `/admin/requests`：申請一覧
-- `/admin/requests/{id}`：申請詳細・承認
+- `/admin/requests/{attendanceCorrection}`：申請詳細・承認
 
 ## ER図
 ![ER図](docs/erd/coachtech-attendance.drawio.png)
@@ -72,21 +73,12 @@ docker-compose up -d --build
 docker-compose exec php bash
 composer install
 cp .env.example .env  #環境変数を変更
-```
-- DB 接続情報（docker-compose.yml の設定と一致させてください。）
-
-- キャッシュ設定（`.env` の CACHE_DRIVER を `file` に変更してください。）
-
-```bash
-# Laravel が storage / cache に書き込めない場合があるため、権限を調整
-chmod -R 775 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache
-
 php artisan key:generate
 php artisan migrate --seed
 ```
+- DB 接続情報（docker-compose.yml の設定と一致させてください。）
+- キャッシュ設定（`.env` の CACHE_DRIVER を `file` に変更してください。）
 - `php artisan migrate --seed` 実行時に、管理者・一般ユーザー・勤怠データ・申請データのダミーが作成されます。
-
 
 ## テストユーザー情報
 
@@ -115,6 +107,10 @@ php artisan migrate --seed
 
 - 認証が未完了のままログインした場合も認証誘導画面へ遷移します。
 - 認証メールの再送機能があります。（1分間に6回まで）
+- Mailtrapの無料プランには送信レート制限があるため、送信エラーが発生する場合があります。
+- その場合は MAIL_MAILER=log を使用して storage/logs/laravel.log の認証URLで動作確認できます。
+- `MAIL_MAILER` を変更した場合は `php artisan config:clear` を実行してください。
+
 
 ## テストコード
 

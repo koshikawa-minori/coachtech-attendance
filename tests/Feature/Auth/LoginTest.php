@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use App\Models\User;
 
 final class LoginTest extends TestCase
 {
@@ -67,9 +67,10 @@ final class LoginTest extends TestCase
         $response = $this->from('/login')->post('/login', $loginInput);
 
         $response->assertRedirect('/login');
-        $response->assertSessionHasErrors(['email']);
 
-        $this->followRedirects($response)->assertSee('ログイン情報が登録されていません');
+        $response->assertSessionHasErrors([
+            'email' => 'ログイン情報が登録されていません',
+        ]);
 
         $this->assertGuest();
 

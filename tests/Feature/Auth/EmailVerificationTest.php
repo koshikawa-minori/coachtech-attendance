@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
+use App\Models\User;
 
 final class EmailVerificationTest extends TestCase
 {
@@ -19,27 +20,77 @@ final class EmailVerificationTest extends TestCase
         parent::setUp();
 
         Notification::fake();
+
     }
 
+    // 会員登録後、認証メールが送信される
     public function test_verification_email_is_sent_after_registration(): void
     {
-        // TODO: 会員登録をPOST
-        // TODO: Notification::assertSentTo($user, VerifyEmail::class)
-        $this->assertTrue(true);
+        $formData = [
+            'name' => '西 伶奈',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ];
+
+        $response = $this->post('/register', $formData);
+        $response->assertRedirect(route('register.verify'));
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@example.com',
+        ]);
+
+        $registeredUser = User::where('email', 'test@example.com')->firstOrFail();
+        Notification::assertSentTo($registeredUser, VerifyEmail::class);
+
     }
 
-    public function test_user_can_open_verification_prompt_and_go_to_verification_site(): void
+    // メール認証誘導画面で「認証はこちらから」ボタンを押下するとメール認証の案内画面に遷移する
+    public function test_click_navigates_to_verification(): void
     {
-        // TODO: 認証誘導画面を表示
-        // TODO: 「認証はこちらから」のリンク先確認
-        $this->assertTrue(true);
+        $formData = [
+            'name' => '西 伶奈',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ];
+
+        $response = $this->post('/register', $formData);
+        $response->assertRedirect(route('register.verify'));
+
+        $registeredUser = User::where('email', 'test@example.com')->firstOrFail();
+
+        $response = $this->actingAs($registeredUser)->get(route('verification.notice'));
+        $response->assertStatus(200);
+        $response->assertViewIs('auth.verify');
     }
 
-    public function test_user_is_redirected_to_attendance_screen_after_email_verification(): void
+    // メール認証を完了すると、勤怠登録画面に遷移する
+    public function test_redirects_to_attendance_after_email_verification(): void
     {
-        // TODO: 未認証ユーザーを作る
-        // TODO: 署名付きURLで認証ルートへGET
-        // TODO: email_verified_at が埋まる & 勤怠登録画面へ遷移
-        $this->assertTrue(true);
+        $formData = [
+            'name' => '西 伶奈',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ];
+
+        $response = $this->post('/register', $formData);
+        $response->assertRedirect(route('register.verify'));
+
+        $registeredUser = User::where('email', 'test@example.com')->firstOrFail();
+
+        $verifyUrl = URL::temporarySignedRoute('verification.verify', now()->addMinutes(60),
+            [
+                'id' => $registeredUser->id,
+                'hash' => sha1($registeredUser->email)
+            ]
+        );
+
+        $response = $this->actingAs($registeredUser)->get($verifyUrl);
+
+        $response->assertRedirect(route('attendance.show'));
+
+        $this->assertTrue($registeredUser->fresh()->hasVerifiedEmail());
     }
 }

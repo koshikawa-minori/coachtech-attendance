@@ -13,41 +13,75 @@ final class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
-    private User $registeredUser;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->registeredUser = User::factory()->create([
-            'password' => Hash::make('password123'),
+        User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => Hash::make('password'),
         ]);
     }
 
-    public function test_login_fails_when_email_is_missing(): void
+    // メールアドレスが未入力の場合、バリデーションメッセージが表示される
+    public function test_email_is_required(): void
     {
-        // TODO: /login にPOST
-        // TODO: assertSessionHasErrors('email')
-        $this->assertTrue(true);
+        $loginInput = $this->getValidLoginInput([
+            'email' => '',
+        ]);
+
+        $response = $this->from('/login')->post('/login', $loginInput);
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHasErrors([
+            'email' => 'メールアドレスを入力してください',
+        ]);
+
+        $this->assertGuest();
     }
 
-    public function test_login_fails_when_password_is_missing(): void
+    // パスワードが未入力の場合、バリデーションメッセージが表示される
+    public function test_password_is_required(): void
     {
-        // TODO: assertSessionHasErrors('password')
-        $this->assertTrue(true);
+        $loginInput = $this->getValidLoginInput([
+            'password' => '',
+        ]);
+
+        $response = $this->from('/login')->post('/login', $loginInput);
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHasErrors([
+            'password' => 'パスワードを入力してください',
+        ]);
+
+        $this->assertGuest();
     }
 
-    public function test_login_fails_when_credentials_do_not_match(): void
+    // 登録内容と一致しない場合、バリデーションメッセージが表示される
+    public function test_input_information_error(): void
     {
-        // TODO: 誤った資格情報でPOST
-        // TODO: エラー文言 or errors を確認
-        $this->assertTrue(true);
+        $loginInput = $this->getValidLoginInput([
+            'email' => 'test1@example.com',
+        ]);
+
+        $response = $this->from('/login')->post('/login', $loginInput);
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHasErrors(['email']);
+
+        $this->followRedirects($response)->assertSee('ログイン情報が登録されていません');
+
+        $this->assertGuest();
+
     }
 
-    public function test_login_succeeds_with_correct_credentials(): void
+    private function getValidLoginInput(array $overrideInput = []): array
     {
-        // TODO: $this->registeredUser のメール + password123 でPOST
-        // TODO: assertAuthenticatedAs($this->registeredUser)
-        $this->assertTrue(true);
+        $validLoginInput = [
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ];
+
+        return array_merge($validLoginInput, $overrideInput);
     }
 }

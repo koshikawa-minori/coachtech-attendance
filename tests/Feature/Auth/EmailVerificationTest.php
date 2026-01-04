@@ -20,7 +20,6 @@ final class EmailVerificationTest extends TestCase
         parent::setUp();
 
         Notification::fake();
-
     }
 
     // 会員登録後、認証メールが送信される
@@ -42,10 +41,9 @@ final class EmailVerificationTest extends TestCase
 
         $registeredUser = User::where('email', 'test@example.com')->firstOrFail();
         Notification::assertSentTo($registeredUser, VerifyEmail::class);
-
     }
 
-    // メール認証誘導画面で「認証はこちらから」ボタンを押下するとメール認証の案内画面に遷移する
+    // メール認証誘導画面で「認証はこちらから」ボタンを押下するとメール認証画面に遷移する
     public function test_click_navigates_to_verification(): void
     {
         $formData = [
@@ -90,7 +88,6 @@ final class EmailVerificationTest extends TestCase
         $response = $this->actingAs($registeredUser)->get($verifyUrl);
 
         $response->assertRedirect(route('attendance.show'));
-
         $this->assertTrue($registeredUser->fresh()->hasVerifiedEmail());
     }
 }

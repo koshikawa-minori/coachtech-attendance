@@ -67,13 +67,13 @@ final class LoginTest extends TestCase
         $response = $this->from('/login')->post('/login', $loginInput);
 
         $response->assertRedirect('/login');
-
         $response->assertSessionHasErrors([
             'email' => 'ログイン情報が登録されていません',
         ]);
 
-        $this->assertGuest();
+        $response->followRedirects()->assertSeeText('ログイン情報が登録されていません');
 
+        $this->assertGuest();
     }
 
     private function getValidLoginInput(array $overrideInput = []): array

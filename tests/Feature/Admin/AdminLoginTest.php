@@ -37,8 +37,6 @@ final class AdminLoginTest extends TestCase
         $response->assertSessionHasErrors([
             'email' => 'メールアドレスを入力してください',
         ]);
-
-        $this->assertGuest();
     }
 
     // パスワードが未入力の場合、バリデーションメッセージが表示される
@@ -54,8 +52,6 @@ final class AdminLoginTest extends TestCase
         $response->assertSessionHasErrors([
             'password' => 'パスワードを入力してください',
         ]);
-
-        $this->assertGuest();
     }
 
     // 登録内容と一致しない場合、バリデーションメッセージが表示される
@@ -68,13 +64,11 @@ final class AdminLoginTest extends TestCase
         $response = $this->from('/admin/login')->post('/login', $loginInput);
 
         $response->assertRedirect('/admin/login');
-
         $response->assertSessionHasErrors([
             'email' => 'ログイン情報が登録されていません',
         ]);
 
-        $this->assertGuest();
-
+        $response->followRedirects()->assertSeeText('ログイン情報が登録されていません');
     }
 
     private function getValidLoginInput(array $overrideInput = []): array

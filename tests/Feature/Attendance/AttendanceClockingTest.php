@@ -36,7 +36,7 @@ final class AttendanceClockingTest extends TestCase
             CarbonImmutable::create(2026,1,4,9,0,0)
         );
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertSeeText('2026年1月4日');
         $response->assertSeeText('09:00');
         $response->assertSeeText('日');
@@ -47,7 +47,7 @@ final class AttendanceClockingTest extends TestCase
     // 勤務外の場合、勤怠ステータスが正しく表示される
     public function test_status_is_off_duty(): void
     {
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
 
         $response->assertStatus(200);
         $response->assertSeeText('勤務外');
@@ -62,7 +62,7 @@ final class AttendanceClockingTest extends TestCase
             'clock_in_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
 
         $response->assertStatus(200);
         $response->assertSeeText('出勤中');
@@ -82,7 +82,7 @@ final class AttendanceClockingTest extends TestCase
             'break_start_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
 
         $response->assertStatus(200);
         $response->assertSeeText('休憩中');
@@ -98,7 +98,7 @@ final class AttendanceClockingTest extends TestCase
             'clock_out_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
 
         $response->assertStatus(200);
         $response->assertSeeText('退勤済');
@@ -107,17 +107,17 @@ final class AttendanceClockingTest extends TestCase
     // 出勤ボタンが正しく機能する
     public function test_can_clock_in(): void
     {
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
 
         $response->assertStatus(200);
         $response->assertSee('value="clock_in"', false);
         $response->assertSeeText('出勤');
 
-        $response = $this->post('/attendance', ['action_type' => 'clock_in']);
+        $response = $this->post(route('attendance.store'), ['action_type' => 'clock_in']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
 
         $response->assertStatus(200);
         $response->assertSeeText('出勤中');
@@ -133,7 +133,7 @@ final class AttendanceClockingTest extends TestCase
             'clock_out_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
 
         $response->assertStatus(200);
         $response->assertSeeText('退勤済');
@@ -155,7 +155,7 @@ final class AttendanceClockingTest extends TestCase
             'clock_in_at' => now(),
         ]);
 
-        $response = $this->get('/attendance/list');
+        $response = $this->get(route('attendance.index'));
         $response->assertSeeText('09:00');
 
         CarbonImmutable::setTestNow(null);
@@ -170,17 +170,17 @@ final class AttendanceClockingTest extends TestCase
             'clock_in_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
 
         $response->assertStatus(200);
         $response->assertSee('value="break_start"', false);
         $response->assertSeeText('休憩入');
 
-        $response = $this->post('/attendance', ['action_type' => 'break_start']);
+        $response = $this->post(route('attendance.store'), ['action_type' => 'break_start']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('休憩中');
     }
@@ -194,25 +194,25 @@ final class AttendanceClockingTest extends TestCase
             'clock_in_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
-        $response = $this->post('/attendance', ['action_type' => 'break_start']);
+        $response = $this->get(route('attendance.show'));
+        $response = $this->post(route('attendance.store'), ['action_type' => 'break_start']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('休憩中');
 
-        $response = $this->get('/attendance');
-        $response = $this->post('/attendance', ['action_type' => 'break_end']);
+        $response = $this->get(route('attendance.show'));
+        $response = $this->post(route('attendance.store'), ['action_type' => 'break_end']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('出勤中');
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSee('value="break_start"', false);
         $response->assertSeeText('休憩入');
@@ -232,16 +232,16 @@ final class AttendanceClockingTest extends TestCase
             'break_start_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('休憩中');
 
-        $response = $this->get('/attendance');
-        $response = $this->post('/attendance', ['action_type' => 'break_end']);
+        $response = $this->get(route('attendance.show'));
+        $response = $this->post(route('attendance.store'), ['action_type' => 'break_end']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('出勤中');
     }
@@ -255,35 +255,35 @@ final class AttendanceClockingTest extends TestCase
             'clock_in_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
-        $response = $this->post('/attendance', ['action_type' => 'break_start']);
+        $response = $this->get(route('attendance.show'));
+        $response = $this->post(route('attendance.store'), ['action_type' => 'break_start']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('休憩中');
 
-        $response = $this->get('/attendance');
-        $response = $this->post('/attendance', ['action_type' => 'break_end']);
+        $response = $this->get(route('attendance.show'));
+        $response = $this->post(route('attendance.store'), ['action_type' => 'break_end']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('出勤中');
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSee('value="break_start"', false);
         $response->assertSeeText('休憩入');
 
-        $response = $this->get('/attendance');
-        $response = $this->post('/attendance', ['action_type' => 'break_start']);
+        $response = $this->get(route('attendance.show'));
+        $response = $this->post(route('attendance.store'), ['action_type' => 'break_start']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSee('value="break_end"', false);
         $response->assertSeeText('休憩中');
@@ -302,12 +302,12 @@ final class AttendanceClockingTest extends TestCase
             'clock_in_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
-        $response = $this->post('/attendance', ['action_type' => 'break_start']);
+        $response = $this->get(route('attendance.show'));
+        $response = $this->post(route('attendance.store'), ['action_type' => 'break_start']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('休憩中');
 
@@ -315,16 +315,16 @@ final class AttendanceClockingTest extends TestCase
             CarbonImmutable::now()->addHour()
         );
 
-        $response = $this->get('/attendance');
-        $response = $this->post('/attendance', ['action_type' => 'break_end']);
+        $response = $this->get(route('attendance.show'));
+        $response = $this->post(route('attendance.store'), ['action_type' => 'break_end']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('出勤中');
 
-        $response = $this->get('/attendance/list');
+        $response = $this->get(route('attendance.index'));
         $response->assertSeeText('01:00');
 
         CarbonImmutable::setTestNow(null);
@@ -339,15 +339,15 @@ final class AttendanceClockingTest extends TestCase
             'clock_in_at' => now(),
         ]);
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertSee('value="clock_out"', false);
         $response->assertSeeText('退勤');
 
-        $response = $this->post('/attendance', ['action_type' => 'clock_out']);
+        $response = $this->post(route('attendance.store'), ['action_type' => 'clock_out']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('退勤済');
     }
@@ -359,13 +359,13 @@ final class AttendanceClockingTest extends TestCase
             CarbonImmutable::create(2026,1,4,9,0,0)
         );
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
 
-        $response = $this->post('/attendance', ['action_type' => 'clock_in']);
+        $response = $this->post(route('attendance.store'), ['action_type' => 'clock_in']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('出勤中');
 
@@ -373,15 +373,15 @@ final class AttendanceClockingTest extends TestCase
             CarbonImmutable::now()->addHours(8)
         );
 
-        $response = $this->post('/attendance', ['action_type' => 'clock_out']);
+        $response = $this->post(route('attendance.store'), ['action_type' => 'clock_out']);
         $response->assertStatus(302);
         $response->assertRedirect(route('attendance.show'));
 
-        $response = $this->get('/attendance');
+        $response = $this->get(route('attendance.show'));
         $response->assertStatus(200);
         $response->assertSeeText('退勤済');
 
-        $response = $this->get('/attendance/list');
+        $response = $this->get(route('attendance.index'));
         $response->assertSeeText('17:00');
 
         CarbonImmutable::setTestNow(null);

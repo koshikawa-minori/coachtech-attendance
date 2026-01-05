@@ -19,7 +19,7 @@ final class RegisterTest extends TestCase
             'name' => '',
         ]);
 
-        $response = $this->post('/register', $registerInput);
+        $response = $this->post(route('register'), $registerInput);
 
         $response->assertSessionHasErrors([
             'name' => 'お名前を入力してください',
@@ -35,7 +35,7 @@ final class RegisterTest extends TestCase
             'email' => '',
         ]);
 
-        $response = $this->post('/register', $registerInput);
+        $response = $this->post(route('register'), $registerInput);
 
         $response->assertSessionHasErrors([
             'email' => 'メールアドレスを入力してください',
@@ -52,7 +52,7 @@ final class RegisterTest extends TestCase
             'password_confirmation' => 'passwor',
         ]);
 
-        $response = $this->post('/register', $registerInput);
+        $response = $this->post(route('register'), $registerInput);
 
         $response->assertSessionHasErrors([
             'password' => 'パスワードは8文字以上で入力してください',
@@ -69,7 +69,7 @@ final class RegisterTest extends TestCase
             'password_confirmation' => 'passwordd',
         ]);
 
-        $response = $this->post('/register', $registerInput);
+        $response = $this->post(route('register'), $registerInput);
 
         $response->assertSessionHasErrors([
             'password_confirmation' => 'パスワードと一致しません',
@@ -86,7 +86,7 @@ final class RegisterTest extends TestCase
             'password_confirmation' => '',
         ]);
 
-        $response = $this->post('/register', $registerInput);
+        $response = $this->post(route('register'), $registerInput);
 
         $response->assertSessionHasErrors([
             'password' => 'パスワードを入力してください',
@@ -100,7 +100,7 @@ final class RegisterTest extends TestCase
     {
         $registerInput = $this->getValidRegisterInput();
 
-        $response =$this->post('/register', $registerInput);
+        $response =$this->post(route('register'), $registerInput);
 
         $this->assertAuthenticated();
 

@@ -71,7 +71,7 @@ final class LoginTest extends TestCase
             'email' => 'ログイン情報が登録されていません',
         ]);
 
-        $response->followRedirects()->assertSeeText('ログイン情報が登録されていません');
+        $this->get('/login')->assertSeeText('ログイン情報が登録されていません');
 
         $this->assertGuest();
     }

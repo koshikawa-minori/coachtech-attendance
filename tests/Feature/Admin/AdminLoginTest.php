@@ -68,7 +68,7 @@ final class AdminLoginTest extends TestCase
             'email' => 'ログイン情報が登録されていません',
         ]);
 
-        $response->followRedirects()->assertSeeText('ログイン情報が登録されていません');
+        $this->get('/admin/login')->assertSeeText('ログイン情報が登録されていません');
     }
 
     private function getValidLoginInput(array $overrideInput = []): array

@@ -32,7 +32,7 @@ final class EmailVerificationTest extends TestCase
             'password_confirmation' => 'password',
         ];
 
-        $response = $this->post('/register', $formData);
+        $response = $this->post(route('register'), $formData);
         $response->assertRedirect(route('register.verify'));
 
         $this->assertDatabaseHas('users', [
@@ -53,7 +53,7 @@ final class EmailVerificationTest extends TestCase
             'password_confirmation' => 'password',
         ];
 
-        $response = $this->post('/register', $formData);
+        $response = $this->post(route('register'), $formData);
         $response->assertRedirect(route('register.verify'));
 
         $registeredUser = User::where('email', 'test@example.com')->firstOrFail();
@@ -73,7 +73,7 @@ final class EmailVerificationTest extends TestCase
             'password_confirmation' => 'password',
         ];
 
-        $response = $this->post('/register', $formData);
+        $response = $this->post(route('register'), $formData);
         $response->assertRedirect(route('register.verify'));
 
         $registeredUser = User::where('email', 'test@example.com')->firstOrFail();

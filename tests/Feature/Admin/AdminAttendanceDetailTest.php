@@ -27,8 +27,27 @@ final class AdminAttendanceDetailTest extends TestCase
     // 勤怠詳細画面に表示されるデータが選択したものになっている
     public function test_admin_attendance_detail_displays_correct_data(): void
     {
-        // TODO: 対象勤怠を作る → 詳細GET → 表示一致
-        $this->assertTrue(true);
+        $today = Carbon::create(2026,1,4,9,0,0);
+        Carbon::setTestNow($today);
+
+        $user = User::factory()->create(['is_admin' => false, 'name' => '田中 太郎']);
+
+        $attendance = Attendance::create([
+            'user_id' => $user->id,
+            'work_date' => $today->toDateString(),
+            'clock_in_at' => $today->copy()->setTime(9,31),
+            'clock_out_at' => $today->copy()->setTime(18,21),
+            'notes' => null,
+        ]);
+
+        $response = $this->get(route('admin.attendance.detail', ['attendance' => $attendance->id]));
+
+        $response->assertStatus(200);
+        $response->assertSee('田中 太郎');
+        $response->assertSee('09:31');
+        $response->assertSee('18:21');
+
+        Carbon::setTestNow(null);
     }
 
     // 出勤時間が退勤時間より後になっている場合、エラーメッセージが表示される

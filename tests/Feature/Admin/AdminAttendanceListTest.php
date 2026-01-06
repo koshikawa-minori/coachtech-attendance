@@ -24,6 +24,12 @@ final class AdminAttendanceListTest extends TestCase
         $this->actingAs($this->adminUser);
     }
 
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow(null);
+        parent::tearDown();
+    }
+
     private function createAttendanceForDay(
         User $user,
         Carbon $targetDay,

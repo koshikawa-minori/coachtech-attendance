@@ -41,6 +41,8 @@ class AttendanceTimeRequest extends FormRequest
         ];
     }
 
+    // 機能要件では文言が共通ですが、ユーザー視点で分かりやすくするため
+    // 休憩開始／終了を明示した文言に変更（コーチ了承済）
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
@@ -69,10 +71,10 @@ class AttendanceTimeRequest extends FormRequest
             if (!blank($breakStart0) || !blank($breakEnd0)) {
 
                 if (blank($breakStart0)) {
-                    $validator->errors()->add('breaks.0.start', '休憩時間が不適切な値です');
+                    $validator->errors()->add('breaks.0.start', '休憩開始時間が不適切な値です');
                 }
                 if (blank($breakEnd0)) {
-                    $validator->errors()->add('breaks.0.end', '休憩時間が不適切な値です');
+                    $validator->errors()->add('breaks.0.end', '休憩終了時間が不適切な値です');
                 }
 
                 if (!blank($breakStart0) && !blank($breakEnd0)) {
@@ -84,11 +86,11 @@ class AttendanceTimeRequest extends FormRequest
                     }
 
                     if ($breakStartTime0->lt($clockInTime) || $breakStartTime0->gt($clockOutTime)) {
-                        $validator->errors()->add('breaks.0.start', '休憩時間が不適切な値です');
+                        $validator->errors()->add('breaks.0.start', '休憩開始時間が不適切な値です');
                     }
 
                     if ($breakEndTime0->gt($clockOutTime)) {
-                        $validator->errors()->add('breaks.0.end', '休憩時間もしくは退勤時間が不適切な値です');
+                        $validator->errors()->add('breaks.0.end', '休憩終了時間もしくは退勤時間が不適切な値です');
                     }
                 }
             }
@@ -99,10 +101,10 @@ class AttendanceTimeRequest extends FormRequest
             if (!blank($breakStart1) || !blank($breakEnd1)) {
 
                 if (blank($breakStart1)) {
-                    $validator->errors()->add('breaks.1.start', '休憩時間が不適切な値です');
+                    $validator->errors()->add('breaks.1.start', '休憩開始時間が不適切な値です');
                 }
                 if (blank($breakEnd1)) {
-                    $validator->errors()->add('breaks.1.end', '休憩時間が不適切な値です');
+                    $validator->errors()->add('breaks.1.end', '休憩終了時間が不適切な値です');
                 }
 
                 if (!blank($breakStart1) && !blank($breakEnd1)) {
@@ -114,11 +116,11 @@ class AttendanceTimeRequest extends FormRequest
                     }
 
                     if ($breakStartTime1->lt($clockInTime) || $breakStartTime1->gt($clockOutTime)) {
-                        $validator->errors()->add('breaks.1.start', '休憩時間が不適切な値です');
+                        $validator->errors()->add('breaks.1.start', '休憩開始時間が不適切な値です');
                     }
 
                     if ($breakEndTime1->gt($clockOutTime)) {
-                        $validator->errors()->add('breaks.1.end', '休憩時間もしくは退勤時間が不適切な値です');
+                        $validator->errors()->add('breaks.1.end', '休憩終了時間もしくは退勤時間が不適切な値です');
                     }
                 }
             }

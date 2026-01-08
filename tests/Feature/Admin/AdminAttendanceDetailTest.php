@@ -64,7 +64,7 @@ final class AdminAttendanceDetailTest extends TestCase
         $response = $this->get(route('admin.attendance.detail', ['attendance' => $attendance->id]));
 
         $response->assertStatus(200);
-        $response->assertSee('田中 太郎');
+        $response->assertSeeText('田中 太郎');
         $response->assertSee('09:31');
         $response->assertSee('18:21');
     }

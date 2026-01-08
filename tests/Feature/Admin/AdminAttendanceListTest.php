@@ -71,13 +71,13 @@ final class AdminAttendanceListTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertSee('田中 太郎');
-        $response->assertSee('山田 花子');
+        $response->assertSeeText('田中 太郎');
+        $response->assertSeeText('山田 花子');
 
-        $response->assertSee('09:00');
-        $response->assertSee('18:00');
-        $response->assertSee('10:00');
-        $response->assertSee('19:00');
+        $response->assertSeeText('09:00');
+        $response->assertSeeText('18:00');
+        $response->assertSeeText('10:00');
+        $response->assertSeeText('19:00');
     }
 
     // 遷移した際に現在の日付が表示される
@@ -89,7 +89,7 @@ final class AdminAttendanceListTest extends TestCase
         $response = $this->get(route('admin.attendance.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('2026/01/04');
+        $response->assertSeeText('2026/01/04');
     }
 
     // 「前日」を押下した時に前の日の勤怠情報が表示される
@@ -101,7 +101,7 @@ final class AdminAttendanceListTest extends TestCase
         $response = $this->get(route('admin.attendance.index', ['date' => '2026-01-03']));
 
         $response->assertStatus(200);
-        $response->assertSee('2026/01/03');
+        $response->assertSeeText('2026/01/03');
     }
 
     // 「翌日」を押下した時に次の日の勤怠情報が表示される
@@ -113,6 +113,6 @@ final class AdminAttendanceListTest extends TestCase
         $response = $this->get(route('admin.attendance.index', ['date' => '2026-01-05']));
 
         $response->assertStatus(200);
-        $response->assertSee('2026/01/05');
+        $response->assertSeeText('2026/01/05');
     }
 }

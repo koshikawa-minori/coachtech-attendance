@@ -20,10 +20,14 @@ final class AttendanceClockingTest extends TestCase
     {
         parent::setUp();
 
+        Carbon::setTestNow(Carbon::create(2026, 1, 4, 9, 0, 0));
+
         $this->user = User::factory()->create([
             'email' => 'test@example.com',
-            'email_verified_at' => now(),
+            'email_verified_at' => Carbon::now(),
         ]);
+
+        Carbon::setTestNow(null);
 
         $this->actingAs($this->user);
     }
@@ -37,9 +41,7 @@ final class AttendanceClockingTest extends TestCase
     // 現在の日時情報がUIと同じ形式で出力されている
     public function test_current_datetime_is_displayed_correctly(): void
     {
-        Carbon::setTestNow(
-            Carbon::create(2026,1,4,9,0,0)
-        );
+        Carbon::setTestNow(Carbon::create(2026, 1, 4, 9, 0, 0));
 
         $response = $this->get(route('attendance.show'));
         $response->assertSeeText('2026年1月4日');
@@ -50,6 +52,8 @@ final class AttendanceClockingTest extends TestCase
     // 勤務外の場合、勤怠ステータスが正しく表示される
     public function test_status_is_off_duty(): void
     {
+        Carbon::setTestNow(Carbon::create(2026, 1, 4, 9, 0, 0));
+
         $response = $this->get(route('attendance.show'));
 
         $response->assertStatus(200);
@@ -61,8 +65,8 @@ final class AttendanceClockingTest extends TestCase
     {
         Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -76,13 +80,13 @@ final class AttendanceClockingTest extends TestCase
     {
         $attendance = Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
         ]);
 
         BreakTime::create([
             'attendance_id' => $attendance->id,
-            'break_start_at' => now(),
+            'break_start_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -96,9 +100,9 @@ final class AttendanceClockingTest extends TestCase
     {
         Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
-            'clock_out_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
+            'clock_out_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -131,9 +135,9 @@ final class AttendanceClockingTest extends TestCase
     {
         Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
-            'clock_out_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
+            'clock_out_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -148,14 +152,12 @@ final class AttendanceClockingTest extends TestCase
     // 出勤時刻が勤怠一覧画面で確認できる
     public function test_clock_in_time_is_shown_on_attendance_list(): void
     {
-        Carbon::setTestNow(
-            Carbon::create(2026,1,4,9,0,0)
-        );
+        Carbon::setTestNow(Carbon::create(2026, 1, 4, 9, 0, 0));
 
         Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.index'));
@@ -167,8 +169,8 @@ final class AttendanceClockingTest extends TestCase
     {
         Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -191,8 +193,8 @@ final class AttendanceClockingTest extends TestCase
     {
         Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -224,13 +226,13 @@ final class AttendanceClockingTest extends TestCase
     {
         $attendance = Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
         ]);
 
         BreakTime::create([
             'attendance_id' => $attendance->id,
-            'break_start_at' => now(),
+            'break_start_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -252,8 +254,8 @@ final class AttendanceClockingTest extends TestCase
     {
         Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -293,14 +295,12 @@ final class AttendanceClockingTest extends TestCase
     // 休憩時刻が勤怠一覧画面で確認できる
     public function test_break_time_is_shown_on_attendance_list(): void
     {
-        Carbon::setTestNow(
-            Carbon::create(2026,1,4,12,0,0)
-        );
+        Carbon::setTestNow(Carbon::create(2026, 1, 4, 12, 0, 0));
 
         Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -312,9 +312,7 @@ final class AttendanceClockingTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText('休憩中');
 
-        Carbon::setTestNow(
-            Carbon::now()->addHour()
-        );
+        Carbon::setTestNow(Carbon::now()->addHour());
 
         $response = $this->get(route('attendance.show'));
         $response = $this->post(route('attendance.store'), ['action_type' => 'break_end']);
@@ -334,8 +332,8 @@ final class AttendanceClockingTest extends TestCase
     {
         Attendance::create([
             'user_id' => $this->user->id,
-            'work_date' => today(),
-            'clock_in_at' => now(),
+            'work_date' => Carbon::today(),
+            'clock_in_at' => Carbon::now(),
         ]);
 
         $response = $this->get(route('attendance.show'));
@@ -354,9 +352,7 @@ final class AttendanceClockingTest extends TestCase
     // 退勤時刻が勤怠一覧画面で確認できる
     public function test_clock_out_time_is_shown_on_attendance_list(): void
     {
-        Carbon::setTestNow(
-            Carbon::create(2026,1,4,9,0,0)
-        );
+        Carbon::setTestNow(Carbon::create(2026, 1, 4, 9, 0, 0));
 
         $response = $this->get(route('attendance.show'));
 
@@ -368,9 +364,7 @@ final class AttendanceClockingTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText('出勤中');
 
-        Carbon::setTestNow(
-            Carbon::now()->addHours(8)
-        );
+        Carbon::setTestNow(Carbon::now()->addHours(8));
 
         $response = $this->post(route('attendance.store'), ['action_type' => 'clock_out']);
         $response->assertStatus(302);

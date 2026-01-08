@@ -143,7 +143,7 @@ class AttendanceController extends Controller
         $requestedMonth = $request->query('month');
 
         if ($requestedMonth) {
-            $targetMonth = Carbon::createFromFormat('Y-m-d', $requestedMonth . '-01')->startOfMonth();
+            $targetMonth = Carbon::createFromFormat('Y-m', $requestedMonth)->startOfMonth();
         } else {
             $targetMonth = Carbon::now()->startOfMonth();
         }

@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Attendance;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
-use Carbon\CarbonImmutable;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Models\BreakTime;
@@ -23,25 +22,29 @@ final class AttendanceClockingTest extends TestCase
 
         $this->user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
         ]);
 
         $this->actingAs($this->user);
     }
 
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow(null);
+        parent::tearDown();
+    }
+
     // 現在の日時情報がUIと同じ形式で出力されている
     public function test_current_datetime_is_displayed_correctly(): void
     {
-        CarbonImmutable::setTestNow(
-            CarbonImmutable::create(2026,1,4,9,0,0)
+        Carbon::setTestNow(
+            Carbon::create(2026,1,4,9,0,0)
         );
 
         $response = $this->get(route('attendance.show'));
         $response->assertSeeText('2026年1月4日');
         $response->assertSeeText('09:00');
         $response->assertSeeText('日');
-
-        CarbonImmutable::setTestNow(null);
     }
 
     // 勤務外の場合、勤怠ステータスが正しく表示される
@@ -145,8 +148,8 @@ final class AttendanceClockingTest extends TestCase
     // 出勤時刻が勤怠一覧画面で確認できる
     public function test_clock_in_time_is_shown_on_attendance_list(): void
     {
-        CarbonImmutable::setTestNow(
-            CarbonImmutable::create(2026,1,4,9,0,0)
+        Carbon::setTestNow(
+            Carbon::create(2026,1,4,9,0,0)
         );
 
         Attendance::create([
@@ -157,8 +160,6 @@ final class AttendanceClockingTest extends TestCase
 
         $response = $this->get(route('attendance.index'));
         $response->assertSeeText('09:00');
-
-        CarbonImmutable::setTestNow(null);
     }
 
     // 休憩ボタンが正しく機能する
@@ -292,8 +293,8 @@ final class AttendanceClockingTest extends TestCase
     // 休憩時刻が勤怠一覧画面で確認できる
     public function test_break_time_is_shown_on_attendance_list(): void
     {
-        CarbonImmutable::setTestNow(
-            CarbonImmutable::create(2026,1,4,12,0,0)
+        Carbon::setTestNow(
+            Carbon::create(2026,1,4,12,0,0)
         );
 
         Attendance::create([
@@ -311,8 +312,8 @@ final class AttendanceClockingTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText('休憩中');
 
-        CarbonImmutable::setTestNow(
-            CarbonImmutable::now()->addHour()
+        Carbon::setTestNow(
+            Carbon::now()->addHour()
         );
 
         $response = $this->get(route('attendance.show'));
@@ -326,8 +327,6 @@ final class AttendanceClockingTest extends TestCase
 
         $response = $this->get(route('attendance.index'));
         $response->assertSeeText('01:00');
-
-        CarbonImmutable::setTestNow(null);
     }
 
     // 退勤ボタンが正しく機能する
@@ -355,8 +354,8 @@ final class AttendanceClockingTest extends TestCase
     // 退勤時刻が勤怠一覧画面で確認できる
     public function test_clock_out_time_is_shown_on_attendance_list(): void
     {
-        CarbonImmutable::setTestNow(
-            CarbonImmutable::create(2026,1,4,9,0,0)
+        Carbon::setTestNow(
+            Carbon::create(2026,1,4,9,0,0)
         );
 
         $response = $this->get(route('attendance.show'));
@@ -369,8 +368,8 @@ final class AttendanceClockingTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeText('出勤中');
 
-        CarbonImmutable::setTestNow(
-            CarbonImmutable::now()->addHours(8)
+        Carbon::setTestNow(
+            Carbon::now()->addHours(8)
         );
 
         $response = $this->post(route('attendance.store'), ['action_type' => 'clock_out']);
@@ -383,8 +382,6 @@ final class AttendanceClockingTest extends TestCase
 
         $response = $this->get(route('attendance.index'));
         $response->assertSeeText('17:00');
-
-        CarbonImmutable::setTestNow(null);
     }
 
 }

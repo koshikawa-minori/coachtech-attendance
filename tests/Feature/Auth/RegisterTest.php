@@ -61,7 +61,7 @@ final class RegisterTest extends TestCase
         $this->assertGuest();
     }
 
-    //パスワードが一致しない場合、バリデーションメッセージが表示される
+    // パスワードが一致しない場合、バリデーションメッセージが表示される
     public function test_password_confirmation_mismatch(): void
     {
         $registerInput = $this->getValidRegisterInput([

@@ -7,10 +7,11 @@ namespace Tests\Feature\Admin\Request;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-final class AdminCorrectionTest extends TestCase
+final class AdminAttendanceCorrectionTest extends TestCase
 {
     use RefreshDatabase;
 
+    // ID15
     // 承認待ちの修正申請が全て表示されている
     public function test_list_shows_all_pending_requests(): void
     {

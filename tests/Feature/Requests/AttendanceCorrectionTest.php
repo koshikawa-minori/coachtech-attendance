@@ -6,38 +6,170 @@ namespace Tests\Feature\Requests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Attendance;
+use App\Models\BreakTime;
+use Carbon\Carbon;
 
 final class AttendanceCorrectionTest extends TestCase
 {
     use RefreshDatabase;
 
-    // ID11
+    private User $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+    }
+
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow(null);
+        parent::tearDown();
+    }
+
+    private function createUserAttendanceForDate(
+        Carbon $date,
+        array $overrideAttendance = []
+    ): Attendance
+    {
+        $attendanceAttributes = array_merge([
+            'user_id' => $this->user->id,
+            'work_date' => $date->toDateString(),
+            'clock_in_at' => $date->copy()->setTime(9,0),
+            'clock_out_at' => $date->copy()->setTime(18,0),
+            'notes' => null,
+        ],
+        $overrideAttendance
+        );
+
+        return Attendance::create($attendanceAttributes);
+    }
+
+    private function makeUpdatePayload(array $overridePayload = []): array
+    {
+        $defaultPayload = [
+            'clock_in_at' => '09:00',
+            'clock_out_at' => '18:00',
+            'breaks' => [
+                ['start' => '12:00', 'end' => '13:00'],
+            ],
+            'note' => '電車遅延のため',
+        ];
+
+        return array_replace_recursive($defaultPayload, $overridePayload);
+    }
+
     // 出勤時間が退勤時間より後になっている場合、エラーメッセージが表示される
     public function test_request_rejects_clock_in_after_clock_out(): void
     {
-        // TODO: 修正申請POST → 出勤 > 退勤 → エラー
-        $this->assertTrue(true);
+        $today = Carbon::create(2026, 1, 4, 9, 0, 0);
+        Carbon::setTestNow($today);
+
+        $attendance = $this->createUserAttendanceForDate($today);
+
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'break_start_at' => $today->copy()->setTime(12,0),
+            'break_end_at' => $today->copy()->setTime(13,0),
+        ]);
+
+        $payload = $this->makeUpdatePayload([
+            'clock_in_at' => '19:00',
+            'clock_out_at' => '18:00',
+        ]);
+
+        $response = $this->from(route('attendance.detail', ['attendance' => $attendance->id]))->post(route('attendance.detail.request', ['attendance' => $attendance->id]), $payload);
+
+        $response->assertRedirect(route('attendance.detail', ['attendance' => $attendance->id]));
+        $response->assertSessionHasErrors([
+            'clock_in_at' => '出勤時間もしくは退勤時間が不適切な値です',
+        ]);
     }
 
     // 休憩開始時間が退勤時間より後になっている場合、エラーメッセージが表示される
     public function test_request_rejects_break_start_after_clock_out(): void
     {
-        // TODO: 修正申請POST → 休憩開始 > 退勤 → エラー
-        $this->assertTrue(true);
+        $today = Carbon::create(2026, 1, 4, 9, 0, 0);
+        Carbon::setTestNow($today);
+
+        $attendance = $this->createUserAttendanceForDate($today);
+
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'break_start_at' => $today->copy()->setTime(12,0),
+            'break_end_at' => $today->copy()->setTime(13,0),
+        ]);
+
+        $payload = $this->makeUpdatePayload([
+            'breaks' => [
+                ['start' => '19:00', 'end' => '19:30'],
+            ],
+        ]);
+
+        $response = $this->from(route('attendance.detail', ['attendance' => $attendance->id]))->post(route('attendance.detail.request', ['attendance' => $attendance->id]), $payload);
+
+        $response->assertRedirect(route('attendance.detail', ['attendance' => $attendance->id]));
+        $response->assertSessionHasErrors([
+            'breaks.0.start' => '休憩開始時間が不適切な値です',
+        ]);
     }
 
     // 休憩終了時間が退勤時間より後になっている場合、エラーメッセージが表示される
     public function test_request_rejects_break_end_after_clock_out(): void
     {
-        // TODO: 修正申請POST → 休憩終了 > 退勤 → エラー
-        $this->assertTrue(true);
+        $today = Carbon::create(2026,1,4,9,0,0);
+        Carbon::setTestNow($today);
+
+        $attendance = $this->createUserAttendanceForDate($today);
+
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'break_start_at' => $today->copy()->setTime(12,0),
+            'break_end_at' => $today->copy()->setTime(13,0),
+        ]);
+
+        $payload = $this->makeUpdatePayload([
+            'breaks' => [
+                ['start' => '12:00', 'end' => '19:00'],
+            ],
+        ]);
+
+        $response = $this->from(route('attendance.detail', ['attendance' => $attendance->id]))->post(route('attendance.detail.request', ['attendance' => $attendance->id]), $payload);
+
+        $response->assertRedirect(route('attendance.detail', ['attendance' => $attendance->id]));
+        $response->assertSessionHasErrors([
+            'breaks.0.end' => '休憩終了時間もしくは退勤時間が不適切な値です',
+        ]);
     }
 
     // 備考欄が未入力の場合のエラーメッセージが表示される
     public function test_request_rejects_missing_note(): void
     {
-        // TODO: 修正申請POST → 備考未入力 → エラー
-        $this->assertTrue(true);
+        $today = Carbon::create(2026,1,4,9,0,0);
+        Carbon::setTestNow($today);
+
+        $attendance = $this->createUserAttendanceForDate($today);
+
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'break_start_at' => $today->copy()->setTime(12,0),
+            'break_end_at' => $today->copy()->setTime(13,0),
+        ]);
+
+        $payload = $this->makeUpdatePayload([
+            'note' => '',
+        ]);
+
+        $response = $this->from(route('attendance.detail', ['attendance' => $attendance->id]))->post(route('attendance.detail.request', ['attendance' => $attendance->id]), $payload);
+
+        $response->assertRedirect(route('attendance.detail', ['attendance' => $attendance->id]));
+        $response->assertSessionHasErrors([
+            'note' => '備考を記入してください',
+        ]);
     }
 
     // 修正申請処理が実行される

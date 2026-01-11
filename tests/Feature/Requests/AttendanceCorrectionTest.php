@@ -9,6 +9,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Models\BreakTime;
+use App\Models\AttendanceCorrection;
 use Carbon\Carbon;
 
 final class AttendanceCorrectionTest extends TestCase
@@ -175,28 +176,166 @@ final class AttendanceCorrectionTest extends TestCase
     // 修正申請処理が実行される
     public function test_request_creates_correction(): void
     {
-        // TODO: 修正申請POST → 申請が作成される
-        $this->assertTrue(true);
+        $today = Carbon::create(2026,1,4,9,0,0);
+        Carbon::setTestNow($today);
+
+        $attendance = $this->createUserAttendanceForDate($today);
+
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'break_start_at' => $today->copy()->setTime(12,0),
+            'break_end_at' => $today->copy()->setTime(13,0),
+        ]);
+
+        $payload = $this->makeUpdatePayload([
+            'clock_in_at' => '09:10',
+            'clock_out_at' => '18:10',
+        ]);
+
+        $response = $this->from(route('attendance.detail', ['attendance' => $attendance->id]))->post(route('attendance.detail.request', ['attendance' => $attendance->id]), $payload);
+
+        $requestedClockIn = $today->copy()->setTime(9,10);
+        $requestedClockOut = $today->copy()->setTime(18,10);
+        $this->assertDatabaseCount(table: 'attendance_requests', count: 1);
+        $this->assertDatabaseHas('attendance_requests', [
+            'attendance_id' => $attendance->id,
+            'requested_clock_in_at' => $requestedClockIn->toDateTimeString(),
+            'requested_clock_out_at' => $requestedClockOut->toDateTimeString(),
+            'status' => false,
+        ]);
     }
 
     // 「承認待ち」にログインユーザーが行った申請が全て表示されていること
     public function test_list_shows_all_pending_requests_for_user(): void
     {
-        // TODO: 一覧GET → 承認待ちに自分の申請が全件表示
-        $this->assertTrue(true);
+        $today = Carbon::create(2026,1,4,9,0,0);
+        Carbon::setTestNow($today);
+
+        $attendance = $this->createUserAttendanceForDate($today);
+
+        $firstAttendance = AttendanceCorrection::create([
+            'attendance_id' => $attendance->id,
+            'requested_clock_in_at' => '09:30',
+            'requested_clock_out_at' => '18:30',
+            'requested_notes' => 'ログインユーザー承認待ち1',
+            'status' => false,
+        ]);
+
+        $seccondAttendance = AttendanceCorrection::create([
+            'attendance_id' => $attendance->id,
+            'requested_clock_in_at' => '10:30',
+            'requested_clock_out_at' => '19:30',
+            'requested_notes' => 'ログインユーザー承認待ち2',
+            'status' => false,
+        ]);
+
+        $otherUser = User::factory()->create([]);
+
+        $othersAttendance = Attendance::create([
+            'user_id' => $otherUser->id,
+            'work_date' => $today->toDateString(),
+            'clock_in_at' => $today->copy()->setTime(9,31),
+            'clock_out_at' => $today->copy()->setTime(18,21),
+            'notes' => null,
+        ]);
+
+        AttendanceCorrection::create([
+            'attendance_id' => $othersAttendance->id,
+            'requested_clock_in_at' => '11:30',
+            'requested_clock_out_at' => '20:30',
+            'requested_notes' => '他ユーザー承認待ち1',
+            'status' => false,
+        ]);
+
+        $response = $this->get('/requests?page=wait');
+
+        $response->assertStatus(200);
+        $response->assertSeetext('ログインユーザー承認待ち1');
+        $response->assertSeetext('ログインユーザー承認待ち2');
+        $response->assertDontSeetext('他ユーザー承認待ち1');
     }
 
     // 「承認済み」に管理者が承認した修正申請が全て表示されている
     public function test_list_shows_all_approved_requests_for_user(): void
     {
-        // TODO: 一覧GET → 承認済みに承認済み申請が全件表示
-        $this->assertTrue(true);
+        $today = Carbon::create(2026,1,4,9,0,0);
+        Carbon::setTestNow($today);
+
+        $attendance = $this->createUserAttendanceForDate($today);
+
+        $firstAttendance = AttendanceCorrection::create([
+            'attendance_id' => $attendance->id,
+            'requested_clock_in_at' => '09:30',
+            'requested_clock_out_at' => '18:30',
+            'requested_notes' => 'ログインユーザー承認済み1',
+            'status' => true,
+        ]);
+
+        $seccondAttendance = AttendanceCorrection::create([
+            'attendance_id' => $attendance->id,
+            'requested_clock_in_at' => '10:30',
+            'requested_clock_out_at' => '19:30',
+            'requested_notes' => 'ログインユーザー承認済み2',
+            'status' => true,
+        ]);
+
+        $otherUser = User::factory()->create([]);
+
+        $othersAttendance = Attendance::create([
+            'user_id' => $otherUser->id,
+            'work_date' => $today->toDateString(),
+            'clock_in_at' => $today->copy()->setTime(9,31),
+            'clock_out_at' => $today->copy()->setTime(18,21),
+            'notes' => null,
+        ]);
+
+        AttendanceCorrection::create([
+            'attendance_id' => $othersAttendance->id,
+            'requested_clock_in_at' => '11:30',
+            'requested_clock_out_at' => '20:30',
+            'requested_notes' => '他ユーザー承認済み1',
+            'status' => true,
+        ]);
+
+        $response = $this->get('/requests?page=done');
+
+        $response->assertStatus(200);
+        $response->assertSeetext('ログインユーザー承認済み1');
+        $response->assertSeetext('ログインユーザー承認済み2');
+        $response->assertDontSeetext('他ユーザー承認済み1');
     }
 
     // 各申請の「詳細」を押下すると勤怠詳細画面に遷移する
     public function test_request_detail_link_redirects_to_attendance_detail(): void
     {
-        // TODO: 詳細リンクアクセス → 勤怠詳細へ遷移
-        $this->assertTrue(true);
+        $today = Carbon::create(2026,1,4,9,0,0);
+        Carbon::setTestNow($today);
+
+        $this->user->update(['name' => '田中 太郎']);
+
+        $attendance = $this->createUserAttendanceForDate($today);
+
+        $requestedClockIn = $today->copy()->setTime(9,30);
+        $requestedClockOut = $today->copy()->setTime(18,30);
+
+        AttendanceCorrection::create([
+            'attendance_id' => $attendance->id,
+            'requested_clock_in_at' =>  $requestedClockIn,
+            'requested_clock_out_at' => $requestedClockOut,
+            'requested_notes' => 'ログインユーザー承認待ち',
+            'status' => false,
+        ]);
+
+        $response = $this->get(route('requests.index'));
+        $response->assertStatus(200);
+
+        $attendanceDetailUrl = route('attendance.detail', ['attendance' => $attendance->id]);
+        $response->assertSee($attendanceDetailUrl);
+
+        $response = $this->get($attendanceDetailUrl);
+        $response->assertStatus(200);
+        $response->assertSeeText('田中 太郎');
+        $response->assertSee('value="09:30"', false);
+        $response->assertSee('value="18:30"', false);
     }
 }

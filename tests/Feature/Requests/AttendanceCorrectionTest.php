@@ -250,9 +250,9 @@ final class AttendanceCorrectionTest extends TestCase
         $response = $this->get('/requests?page=wait');
 
         $response->assertStatus(200);
-        $response->assertSeetext('ログインユーザー承認待ち1');
-        $response->assertSeetext('ログインユーザー承認待ち2');
-        $response->assertDontSeetext('他ユーザー承認待ち1');
+        $response->assertSeeText('ログインユーザー承認待ち1');
+        $response->assertSeeText('ログインユーザー承認待ち2');
+        $response->assertDontSeeText('他ユーザー承認待ち1');
     }
 
     // 「承認済み」に管理者が承認した修正申請が全て表示されている
@@ -300,9 +300,9 @@ final class AttendanceCorrectionTest extends TestCase
         $response = $this->get('/requests?page=done');
 
         $response->assertStatus(200);
-        $response->assertSeetext('ログインユーザー承認済み1');
-        $response->assertSeetext('ログインユーザー承認済み2');
-        $response->assertDontSeetext('他ユーザー承認済み1');
+        $response->assertSeeText('ログインユーザー承認済み1');
+        $response->assertSeeText('ログインユーザー承認済み2');
+        $response->assertDontSeeText('他ユーザー承認済み1');
     }
 
     // 各申請の「詳細」を押下すると勤怠詳細画面に遷移する

@@ -181,12 +181,6 @@ final class AttendanceCorrectionTest extends TestCase
 
         $attendance = $this->createUserAttendanceForDate($today);
 
-        BreakTime::create([
-            'attendance_id' => $attendance->id,
-            'break_start_at' => $today->copy()->setTime(12,0),
-            'break_end_at' => $today->copy()->setTime(13,0),
-        ]);
-
         $payload = $this->makeUpdatePayload([
             'clock_in_at' => '09:10',
             'clock_out_at' => '18:10',
@@ -203,6 +197,12 @@ final class AttendanceCorrectionTest extends TestCase
             'requested_clock_out_at' => $requestedClockOut->toDateTimeString(),
             'status' => false,
         ]);
+
+        $attendanceCorrection = AttendanceCorrection::where('attendance_id', $attendance->id)->firstOrFail();
+
+        $this->assertSame([
+            ['start' => '12:00', 'end' => '13:00'],
+        ], $attendanceCorrection->requested_breaks);
     }
 
     // 「承認待ち」にログインユーザーが行った申請が全て表示されていること
@@ -320,7 +320,7 @@ final class AttendanceCorrectionTest extends TestCase
 
         AttendanceCorrection::create([
             'attendance_id' => $attendance->id,
-            'requested_clock_in_at' =>  $requestedClockIn,
+            'requested_clock_in_at' => $requestedClockIn,
             'requested_clock_out_at' => $requestedClockOut,
             'requested_notes' => 'ログインユーザー承認待ち',
             'status' => false,

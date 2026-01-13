@@ -74,6 +74,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // 勤怠詳細画面（管理者）
     Route::get('/admin/attendance/detail/{attendance}', [AdminController::class, 'show'])->name('admin.attendance.detail');
+
     // 勤怠詳細画面直接修正処理（管理者）
     Route::post('/admin/attendance/detail/{attendance}', [AdminController::class, 'update'])->name('admin.attendance.update');
 

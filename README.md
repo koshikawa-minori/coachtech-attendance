@@ -90,7 +90,6 @@ php artisan migrate --seed
 ※本アプリではメール認証を実装しています。
 ※上記テストユーザーは、動作確認用としてメール認証済みの状態で作成されています。
 
-
 ## メール認証機能
 
 本アプリでは**Mailtrap**を利用して
@@ -111,50 +110,28 @@ php artisan migrate --seed
 - その場合は MAIL_MAILER=log を使用して storage/logs/laravel.log の認証URLで動作確認できます。
 - `MAIL_MAILER` を変更した場合は `php artisan config:clear` を実行してください。
 
-
 ## テストコード
 
-- **PHPUnit**を用いたテストケースを作成しています。
-- テスト実行には テスト用データベース（MySQL）を利用します。
+- **PHPUnit** を用いた Feature テストを実装しています。
+- テスト実行時は、**Docker 上の MySQL テスト用データベース（test_db）** を使用します。
+- test_db は **MySQL コンテナ起動時に自動作成**されます。
+- テスト用の DB 接続設定および APP_KEY は **phpunit.xml** にて定義しています。
 
-### 1.テスト用データベース作成
+### テスト実行前の準備
+
 ```bash
-docker-compose exec db mysql -u root -p
-# パスワードは docker-compose.yml の MYSQL_ROOT_PASSWORD を参照してください。
+# DB を含めて初期化（初回 or 作り直し時）
+docker-compose down -v
+docker-compose up -d --build
 
-# パスワード入力後に以下を実行
-CREATE DATABASE test_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-exit
-```
-
-### 2. .env.testing を作成（プロジェクト直下）
-※ 以下は Docker 内のローカル環境でのみ使用されるテスト用データベースの設定です。
-
-```env
-APP_ENV=testing
-APP_KEY=
-
-DB_CONNECTION=mysql
-DB_HOST=db
-DB_PORT=3306
-DB_DATABASE=test_db
-DB_USERNAME=root
-DB_PASSWORD=rootsecret
-
-CACHE_DRIVER=array
-SESSION_DRIVER=array
-QUEUE_CONNECTION=sync
-MAIL_MAILER=log
-```
-
-### 3.テスト用APP_KEY を生成
-```bash
-docker-compose exec php php artisan key:generate --env=testing
+# 開発用DBのマイグレーション
+docker-compose exec php php artisan migrate --seed
 ```
 
 ### テスト実行方法
 以下のどちらかのコマンドで
 すべてのFeatureテストを実行できます。
+※ 環境によっては phpunit コマンドの使用を推奨します。
 
 #### Laravel の Artisan コマンドを利用
 ```bash

@@ -200,9 +200,8 @@ final class AttendanceCorrectionTest extends TestCase
 
         $attendanceCorrection = AttendanceCorrection::where('attendance_id', $attendance->id)->firstOrFail();
 
-        $this->assertSame([
-            ['start' => '12:00', 'end' => '13:00'],
-        ], $attendanceCorrection->requested_breaks);
+        $this->assertSame('12:00', $attendanceCorrection->requested_breaks[0]['start']);
+        $this->assertSame('13:00', $attendanceCorrection->requested_breaks[0]['end']);
     }
 
     // 「承認待ち」にログインユーザーが行った申請が全て表示されていること

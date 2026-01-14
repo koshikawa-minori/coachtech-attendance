@@ -119,11 +119,11 @@ php artisan migrate --seed
 
 ### 1.テスト用データベース作成
 ```bash
-docker-compose exec mysql bash
-mysql -u root -p
+docker-compose exec db mysql -u root -p
+# パスワードは docker-compose.yml の MYSQL_ROOT_PASSWORD を参照してください。
+
 # パスワード入力後に以下を実行
 CREATE DATABASE test_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-exit
 exit
 ```
 
@@ -135,11 +135,11 @@ APP_ENV=testing
 APP_KEY=
 
 DB_CONNECTION=mysql
-DB_HOST=mysql
+DB_HOST=db
 DB_PORT=3306
 DB_DATABASE=test_db
 DB_USERNAME=root
-DB_PASSWORD=root
+DB_PASSWORD=rootsecret
 
 CACHE_DRIVER=array
 SESSION_DRIVER=array
@@ -149,9 +149,7 @@ MAIL_MAILER=log
 
 ### 3.テスト用APP_KEY を生成
 ```bash
-docker-compose exec php bash
-php artisan key:generate --env=testing
-exit
+docker-compose exec php php artisan key:generate --env=testing
 ```
 
 ### テスト実行方法

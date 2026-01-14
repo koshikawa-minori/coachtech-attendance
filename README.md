@@ -5,6 +5,12 @@
 本アプリケーションは一般ユーザーと管理者の2権限を持つ勤怠管理システムです。  
 勤怠登録・勤怠一覧・修正申請・承認などの機能が備えています。
 
+## 使用技術（実行環境）
+- Laravel 12.x
+- PHP 8.2+
+- MySQL 8.0
+- nginx 1.25
+
 ## 機能一覧
 
 ### 一般ユーザー
@@ -48,17 +54,6 @@
 ## ER図
 ![ER図](docs/erd/coachtech-attendance.drawio.png)
 
-## 使用技術（実行環境）
-- Laravel 12.x
-- PHP 8.2+
-- MySQL 8.0
-- nginx 1.25
-
-## 開発環境URL
-- 一般ユーザーログイン: http://localhost/login
-- 管理者ログイン: http://localhost/admin/login
-- phpMyAdmin: http://localhost:8080/
-
 ## 環境構築手順
 
 ### 1. Docker ビルド
@@ -79,6 +74,11 @@ php artisan migrate --seed
 - DB 接続情報（docker-compose.yml の設定と一致させてください。）
 - キャッシュ設定（`.env` の CACHE_DRIVER を `file` に変更してください。）
 - `php artisan migrate --seed` 実行時に、管理者・一般ユーザー・勤怠データ・申請データのダミーが作成されます。
+
+## 開発環境URL
+- 一般ユーザーログイン: http://localhost/login
+- 管理者ログイン: http://localhost/admin/login
+- phpMyAdmin: http://localhost:8080/
 
 ## テストユーザー情報
 
@@ -114,10 +114,8 @@ php artisan migrate --seed
 
 ## テストコード
 
-※ 本アプリでは PHPUnit の実行環境のみ整備しています。
-テストコードは今後実装予定です。
-
-<!-- **PHPUnit**を用いたテストケースを作成しています。
+- **PHPUnit**を用いたテストケースを作成しています。
+- テスト実行には テスト用データベース（MySQL）を利用します。
 
 ### 1.テスト用データベース作成
 ```bash
@@ -149,10 +147,10 @@ QUEUE_CONNECTION=sync
 MAIL_MAILER=log
 ```
 
-### 3.テスト用マイグレーション実行
+### 3.テスト用APP_KEY を生成
 ```bash
 docker-compose exec php bash
-php artisan migrate --env=testing
+php artisan key:generate --env=testing
 exit
 ```
 
@@ -162,10 +160,9 @@ exit
 
 #### Laravel の Artisan コマンドを利用
 ```bash
-php artisan test
+docker-compose exec php php artisan test
 ```
 #### PHPUnit コマンドを利用
 ```bash
-./vendor/bin/phpunit
+docker-compose exec php ./vendor/bin/phpunit
 ```
--->

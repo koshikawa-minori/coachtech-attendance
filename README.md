@@ -54,6 +54,57 @@
 ## ER図
 ![ER図](docs/erd/coachtech-attendance.drawio.png)
 
+## テーブル仕様（抜粋）
+
+本アプリの主要テーブルです。
+全カラム網羅ではなく、初見でDBの全体像が把握できる粒度で記載しています。
+
+### users
+- 役割:ユーザー情報(一般/管理者)
+- 主なカラム:
+  - `id` (PK)
+  - `name`
+  - `email`
+  - `email_verified_at` (メール認証)
+  - `password`
+  - `is_admin` (管理者判定)
+  - `remember_token`
+
+### attendances
+- 役割：日ごとの勤怠情報（出勤・退勤・備考）
+- 主なカラム：
+  - `id` (PK)
+  - `user_id` (FK → users.id)
+  - `work_date`(勤務日)
+  - `clock_in_at`(出勤時刻)
+  - `clock_out_at`(退勤時刻)
+  - `notes`(備考)
+- 制約：
+  - `user_id` + `work_date` をユニーク(1日1件の勤怠)
+
+### break_times
+- 役割：休憩時間(1勤怠に対して複数件)
+- 主なカラム：
+  - `id` (PK)
+  - `attendance_id` (FK → attendances.id)
+  - `break_start_at`
+  - `break_end_at`
+
+### attendance_requests
+- 役割：勤怠修正申請(申請内容・承認状況)
+- 主なカラム：
+  - `id` (PK)
+  - `attendance_id` (FK → attendances.id)
+  - `requested_clock_in_at`(修正希望：出勤)
+  - `requested_clock_out_at`(修正希望：退勤)
+  - `requested_breaks`(修正希望：休憩 ※JSON)
+  - `requested_notes`(修正希望：備考)
+  - `status`(承認状況：未承認 / 承認済)
+  - `reviewed_admin_id` (FK → users.id)
+  - `reviewed_at`(承認日時)
+
+※ 詳細は `database/migrations` を参照してください。
+
 ## 環境構築手順
 
 ### 1. Docker ビルド

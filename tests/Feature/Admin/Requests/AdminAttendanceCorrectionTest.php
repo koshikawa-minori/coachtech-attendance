@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Admin\Request;
+namespace Tests\Feature\Admin\Requests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
